@@ -81,7 +81,7 @@ ggplot(price_comparison, aes(x = reorder(Brand, price_difference), y = price_dif
 
 Now looking at these numbers we get a better picture on these used value fall offs. As predicted, Patek is far and away hitting over it's new value, and if you have \$50k to drop, definitely get one new. Vacheron Constantin suprisingly has the worst fall off, so if you wanted something from the Holy Horology and don't own several Yachts, they might be your best bet.
 
-```{r, echo=FALSE}
+```{r, echo = FALSE}
 watch_data %>%
   gather(key = "Condition", value = "Price", `Price (New)`, `Price (Used)`) %>%
   ggplot(aes(x = Price, fill = Condition)) +
