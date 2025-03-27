@@ -39,7 +39,7 @@ As you can see above, the list is not nearly exhaustive as I want it to be, we w
 # Calculate the frequency and cumulative percentage
 brand_counts <- watch_data %>%
   count(Brand) %>%
-  head(50) %>%
+  head(40) %>%
   arrange(desc(n)) %>%
   mutate(
     cumulative = cumsum(n),
