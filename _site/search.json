@@ -1,0 +1,72 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "A Comprehensive Watch Guide",
+    "section": "",
+    "text": "Sinn 556\nIf you’re anything like me, you scour the internet for all types of information related to watches. From the cheapest automatic chronographs to the most commonly used movement. Here we will explore these topics and many more, from comparing dive watch case diameter trends over the years, to price trends from popular brands like the Rolex Datejust."
+  },
+  {
+    "objectID": "index.html#explore-the-watch-dataset",
+    "href": "index.html#explore-the-watch-dataset",
+    "title": "A Comprehensive Watch Guide",
+    "section": "🔍 Explore the Watch Dataset",
+    "text": "🔍 Explore the Watch Dataset\nWe will be using a dataset I built using AI, as well as manual searching. This is a work-in-progress list and will be updated as we go. For right now, some values such as prices are a bit off, I will try to ensure accuracy as this project grows.\n\n\n\n\n\n\nIn this dataset, we have some pretty standard information, such as dimensions of the watch, movements, etc. What I really want to pinpoint in the future is comparison between types of movements and prices. As we’re all watch fanatics, most of us want to find the best deal we can on the watch with maybe not the most name recognition, but the most bells and whistles. This is what this dataset will be primarily be focused on.\nAs you can see above, the list is not nearly exhaustive as I want it to be, we will be starting out with 600 models and moving on from here. If you have a specific model or brand you want to look up, you can use the search bar above to pinpoint all datasets I currently have of them."
+  },
+  {
+    "objectID": "index.html#chronograph-vs-diver-price-comparison",
+    "href": "index.html#chronograph-vs-diver-price-comparison",
+    "title": "A Comprehensive Watch Guide",
+    "section": "⌚ Chronograph vs Diver: Price Comparison",
+    "text": "⌚ Chronograph vs Diver: Price Comparison\n\nwatch_data %&gt;%\n  filter(Type %in% c(\"Chronograph\", \"Diver\")) %&gt;%\n  ggplot(aes(x = Type, y = `Price (New)`, fill = Type)) +\n  geom_boxplot(outlier.shape = NA) +\n  coord_cartesian(ylim = c(0, 20000)) +\n  labs(title = \"Price Distribution: Chronograph vs Diver\", y = \"Price (New)\", x = NULL) +\n  theme_minimal()"
+  },
+  {
+    "objectID": "index.html#movement-type-distribution-in-chronograph-vs-diver",
+    "href": "index.html#movement-type-distribution-in-chronograph-vs-diver",
+    "title": "A Comprehensive Watch Guide",
+    "section": "⚙️ Movement Type Distribution in Chronograph vs Diver",
+    "text": "⚙️ Movement Type Distribution in Chronograph vs Diver\n\nwatch_data %&gt;%\n  filter(Type %in% c(\"Chronograph\", \"Diver\")) %&gt;%\n  count(Type, `Movement Type`) %&gt;%\n  ggplot(aes(x = Type, y = n, fill = `Movement Type`)) +\n  geom_col(position = \"dodge\") +\n  labs(title = \"Movement Type by Watch Category\", y = \"Count\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n📝 Tip: Use the search boxes above the table to filter by brand, movement type, or complications."
+  },
+  {
+    "objectID": "average prices.html",
+    "href": "average prices.html",
+    "title": "Average Prices",
+    "section": "",
+    "text": "Prices are getting crazy"
+  },
+  {
+    "objectID": "average prices.html#average-price-by-brand",
+    "href": "average prices.html#average-price-by-brand",
+    "title": "Average Prices",
+    "section": "📊 Average Price by Brand",
+    "text": "📊 Average Price by Brand\nA tertiary glance at watch prices on any of the big brands these days send a chill down my spine, and should you. It seems watch brand prices just keep going up, while movements and case materials remain stagnant, and when materials do change, these brands charge an arm and a leg (looking at you Rolex.)\n\n\n\nRolex Titanium Yacht-Master 42\n\n\nBut it isn’t all doom and gloom, a lot of micro brands and entry level friendly brands still offering great bang for your buck. So without further ado, lets look at our entire dataset and look at some common trends on prices these days.\n\n\n\n\n\n\n\n\n\nPrices just seem to be going up, and watches are no exception. All of the big brands are about where you’d expect, with the “High Horology” trio dominating. Blancpain and Zenith are also unexpectedly high, followed by main staples such as Rolex and other top luxury brands.\n\n\n\n\n\n\n\n\n\nLooking at used prices is another story, however. Values for Patek Philippe on the used market actually do BETTER than their new counterparts. Just goes to show how well their new marketing strategy has been working out for them by artificially creating demand they just keep generating more buzz. AP also seems to retain their value, but the rest do show depreciation."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "chronograph vs diver.html",
+    "href": "chronograph vs diver.html",
+    "title": "Chronographs vs. Divers",
+    "section": "",
+    "text": "Tag Heuer Monaco vs Oris Divers SixtyFive\nChronographs and Divers are staples in any watch collection. What we’ll be exploring here is price differences and popularity between the two."
+  },
+  {
+    "objectID": "chronograph vs diver.html#chronograph-vs-diver-price-comparison",
+    "href": "chronograph vs diver.html#chronograph-vs-diver-price-comparison",
+    "title": "Chronographs vs. Divers",
+    "section": "⌚ Chronograph vs Diver: Price Comparison",
+    "text": "⌚ Chronograph vs Diver: Price Comparison\n\n\n\n\n\n\n\n\n\nLooking at our first chart, chronographs seem to have a larger range of prices, for the low and high end markets, but chronographs have a higher average price, this means, on average, a chronograph will cost you more than a dive watch."
+  },
+  {
+    "objectID": "chronograph vs diver.html#movement-type-distribution-in-chronograph-vs-diver",
+    "href": "chronograph vs diver.html#movement-type-distribution-in-chronograph-vs-diver",
+    "title": "Chronographs vs. Divers",
+    "section": "⚙️ Movement Type Distribution in Chronograph vs Diver",
+    "text": "⚙️ Movement Type Distribution in Chronograph vs Diver\n\n\n\n\n\n\n\n\n\nLooking at our second chart things get more interesting. While there are more options for divers in terms of price range, it seems like more divers are made overall, and of those are automatic movements. Manual winded divers seem the least popular, and much less popular than their manual winded chronograph rival, which makes sense, Omega Speedmaster Professional is probably propping up that stat by itself."
+  }
+]

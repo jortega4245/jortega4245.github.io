@@ -1,0 +1,60 @@
+---
+title: "A Comprehensive Watch Guide"
+format: html
+editor: visual
+author: Joseph Ortega
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(DT)
+library(plotly)
+watch_data <- read_csv("750 Watch Dataset.csv")
+```
+
+![Sinn 556](images/Sinn%20556.jpg)
+
+If you're anything like me, you scour the internet for all types of information related to watches. From the cheapest automatic chronographs to the most commonly used movement. Here we will explore these topics and many more, from comparing dive watch case diameter trends over the years, to price trends from popular brands like the Rolex Datejust.
+
+## 🔍 Explore the Watch Dataset
+
+We will be using a dataset I built using AI, as well as manual searching. This is a work-in-progress list and will be updated as we go. For right now, some values such as prices are a bit off, I will try to ensure accuracy as this project grows.
+
+```{r filterable-table, echo = FALSE}
+DT::datatable(
+  watch_data,
+  filter = 'top',
+  options = list(pageLength = 10, autoWidth = TRUE),
+  rownames = FALSE
+)
+```
+
+In this dataset, we have some pretty standard information, such as dimensions of the watch, movements, etc. What I really want to pinpoint in the future is comparison between types of movements and prices. As we're all watch fanatics, most of us want to find the best deal we can on the watch with maybe not the most name recognition, but the most bells and whistles. This is what this dataset will be primarily be focused on.
+
+As you can see above, the list is not nearly exhaustive as I want it to be, we will be starting out with 600 models and moving on from here. If you have a specific model or brand you want to look up, you can use the search bar above to pinpoint all datasets I currently have of them.
+
+# 🧭 Watch Types
+
+```{r, echo = FALSE}
+# Calculate the frequency and cumulative percentage
+brand_counts <- watch_data %>%
+  count(Brand) %>%
+  head(50) %>%
+  arrange(desc(n)) %>%
+  mutate(
+    cumulative = cumsum(n),
+    cumulative_percent = cumulative / sum(n) * 100
+  )
+
+# Pareto chart
+ggplot(brand_counts, aes(x = reorder(Brand, -n), y = n)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  geom_line(aes(y = cumulative_percent / 100 * max(n)), group = 1, color = "red", linewidth = 1) +
+  geom_point(aes(y = cumulative_percent / 100 * max(n)), color = "red") +
+  scale_y_continuous(sec.axis = sec_axis(~ . / max(brand_counts$n) * 100, name = "Cumulative Percentage")) +
+  labs(title = "Pareto Chart of Watch Brands", x = "Brand", y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Our dataset is pretty diverse in watch brands, prioritizing a diversity of brand types, rather than focusing specifically on every different type of Datejust there is.

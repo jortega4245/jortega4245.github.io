@@ -1,0 +1,19 @@
+project:
+  type: website
+  output-dir: docs
+website:
+  title: "Watch Website Project"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - average prices.qmd
+      - chronograph vs diver.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+editor: visual

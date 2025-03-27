@@ -1,0 +1,76 @@
+---
+title: "Chronographs vs. Divers"
+format: html
+editor: visual
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(DT)
+library(plotly)
+watch_data <- read_csv("750 Watch Dataset.csv")
+```
+
+![Tag Heuer Monaco vs Oris Divers SixtyFive](images/Chronograph%20vs%20Diver.png){fig-align="center"}
+
+Chronographs and Divers are staples in any watch collection. What we'll be exploring here is price differences and popularity between the two.
+
+## ⌚ Chronograph vs Diver: Price Comparison
+
+```{r chrono-vs-diver-price, echo = FALSE}
+watch_data %>%
+  filter(Type %in% c("Chronograph", "Diver")) %>%
+  ggplot(aes(x = Type, y = `Price (New)`, fill = Type)) +
+  geom_boxplot(outlier.shape = NA) +
+  coord_cartesian(ylim = c(0, 4000)) +
+  labs(title = "Price Distribution: Chronograph vs Diver", y = "Price (New)", x = NULL) +
+  theme_minimal()
+```
+
+Looking at our first chart, chronographs seem to have a larger range of prices, for the low and high end markets, but chronographs have a higher average price, this means, on average, a chronograph will cost you more than a dive watch.
+
+## ⚙️ Movement Type Distribution in Chronograph vs Diver
+
+```{r chrono-diver-movement-type, echo = FALSE}
+watch_data %>%
+  filter(Type %in% c("Chronograph", "Diver")) %>%
+  count(Type, `Movement Type`) %>%
+  ggplot(aes(x = Type, y = n, fill = `Movement Type`)) +
+  geom_col(position = "dodge", color = "black") +
+  labs(title = "Movement Type by Watch Category", y = "Count") +
+  theme_light()
+```
+
+Looking at our second chart things get more interesting. While there are more options for divers in terms of price range, it seems like more divers are made overall, and of those are automatic movements. Manual winded divers seem the least popular, and much less popular than their manual winded chronograph rival, which makes sense, Omega Speedmaster Professional is probably propping up that stat by itself.
+
+# ⏱️🌊 Popular Chronograph and Diver Brands
+
+Lets see what the actual most popular chronographs and diver brands are by movement types. We'll start with automatic movements.
+
+```{r, echo = FALSE}
+# Filter and summarize data for automatic movement
+auto_watches <- watch_data %>%
+  filter(Type %in% c("Chronograph", "Diver"), `Movement Type` == "Automatic") %>%
+  count(Brand, Type, sort = TRUE) %>%
+  top_n(10, n)  # Select top 10 brands for better visualization
+
+# Pie chart for automatic movement
+plot_ly(auto_watches, labels = ~Brand, values = ~n, type = 'pie', textinfo = 'label+percent') %>%
+  layout(title = 'Top 10 Brands for Automatic Chronographs and Divers')
+```
+
+Suprisingly, a large number of these automatic watches are on the lower end, such as San Martin and Kurono Tokyo. It seems like even at the lower end the cheaper mechanical movements are simply dominating.
+
+```{r, echo = FALSE}
+# Filter and summarize data for quartz movement
+quartz_watches <- watch_data %>%
+  filter(Type %in% c("Chronograph", "Diver"), `Movement Type` == "Quartz") %>%
+  count(Brand, Type, sort = TRUE) %>%
+  top_n(10, n)  # Select top 10 brands for better visualization
+
+# Pie chart for quartz movement
+plot_ly(quartz_watches, labels = ~Brand, values = ~n, type = 'pie', textinfo = 'label+percent') %>%
+  layout(title = 'Top 10 Brands for Quartz Chronographs and Divers')
+```
+
+This one is about what we should expect. A lot of lower end brands simply dominate the market with quartz, which seems to be in line with what you see online.
