@@ -1,58 +1,163 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "A Comprehensive Watch Guide",
-    "section": "",
-    "text": "Sinn 556\nIf you’re anything like me, you scour the internet for all types of information related to watches. From the cheapest automatic chronographs to the most commonly used movement. Here we will explore these topics and many more, from comparing dive watch case diameter trends over the years, to price trends from popular brands like the Rolex Datejust."
-  },
-  {
-    "objectID": "index.html#explore-the-watch-dataset",
-    "href": "index.html#explore-the-watch-dataset",
-    "title": "A Comprehensive Watch Guide",
-    "section": "🔍 Explore the Watch Dataset",
-    "text": "🔍 Explore the Watch Dataset\nWe will be using a dataset I built using AI, as well as manual searching. This is a work-in-progress list and will be updated as we go. For right now, some values such as prices are a bit off, I will try to ensure accuracy as this project grows.\n\n\n\n\n\n\nIn this dataset, we have some pretty standard information, such as dimensions of the watch, movements, etc. What I really want to pinpoint in the future is comparison between types of movements and prices. As we’re all watch fanatics, most of us want to find the best deal we can on the watch with maybe not the most name recognition, but the most bells and whistles. This is what this dataset will be primarily be focused on.\nAs you can see above, the list is not nearly exhaustive as I want it to be, we will be starting out with 600 models and moving on from here. If you have a specific model or brand you want to look up, you can use the search bar above to pinpoint all datasets I currently have of them."
-  },
-  {
-    "objectID": "chronograph vs diver.html",
-    "href": "chronograph vs diver.html",
-    "title": "Chronographs vs. Divers",
-    "section": "",
-    "text": "Tag Heuer Monaco vs Oris Divers SixtyFive\nChronographs and Divers are staples in any watch collection. What we’ll be exploring here is price differences and popularity between the two."
-  },
-  {
-    "objectID": "chronograph vs diver.html#chronograph-vs-diver-price-comparison",
-    "href": "chronograph vs diver.html#chronograph-vs-diver-price-comparison",
-    "title": "Chronographs vs. Divers",
-    "section": "⌚ Chronograph vs Diver: Price Comparison",
-    "text": "⌚ Chronograph vs Diver: Price Comparison\n\n\n\n\n\n\n\n\n\nLooking at our first chart, chronographs seem to have a larger range of prices, for the low and high end markets, but chronographs have a higher average price, this means, on average, a chronograph will cost you more than a dive watch."
-  },
-  {
-    "objectID": "chronograph vs diver.html#movement-type-distribution-in-chronograph-vs-diver",
-    "href": "chronograph vs diver.html#movement-type-distribution-in-chronograph-vs-diver",
-    "title": "Chronographs vs. Divers",
-    "section": "⚙️ Movement Type Distribution in Chronograph vs Diver",
-    "text": "⚙️ Movement Type Distribution in Chronograph vs Diver\n\n\n\n\n\n\n\n\n\nLooking at our second chart things get more interesting. While there are more options for divers in terms of price range, it seems like more divers are made overall, and of those are automatic movements. Manual winded divers seem the least popular, and much less popular than their manual winded chronograph rival, which makes sense, Omega Speedmaster Professional is probably propping up that stat by itself."
-  },
-  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
+    "text": "The 1000 Watch Project is an attempt to look at the watch world through data instead of hype. Most watch coverage online is either a spec sheet or a sales pitch. This site tries to be neither. It takes a curated set of a thousand watches and asks the questions enthusiasts actually argue about: what does a given style really cost, how much value survives the resale market, and whether the categories we throw around hold up when you cluster watches purely by their measurements.\nIt is built as a static site with Quarto and analysed entirely in R with the tidyverse, so every chart on every page is reproducible from the same single dataset.\n\n  \n    1,000\n    Watches\n  \n  \n    121\n    Brands\n  \n  \n    23\n    Attributes each\n  \n  \n    21\n    Countries of origin"
   },
   {
-    "objectID": "average prices.html",
-    "href": "average prices.html",
+    "objectID": "about.html#what-this-is",
+    "href": "about.html#what-this-is",
+    "title": "About",
+    "section": "",
+    "text": "The 1000 Watch Project is an attempt to look at the watch world through data instead of hype. Most watch coverage online is either a spec sheet or a sales pitch. This site tries to be neither. It takes a curated set of a thousand watches and asks the questions enthusiasts actually argue about: what does a given style really cost, how much value survives the resale market, and whether the categories we throw around hold up when you cluster watches purely by their measurements.\nIt is built as a static site with Quarto and analysed entirely in R with the tidyverse, so every chart on every page is reproducible from the same single dataset.\n\n  \n    1,000\n    Watches\n  \n  \n    121\n    Brands\n  \n  \n    23\n    Attributes each\n  \n  \n    21\n    Countries of origin"
+  },
+  {
+    "objectID": "about.html#the-dataset",
+    "href": "about.html#the-dataset",
+    "title": "About",
+    "section": "The dataset",
+    "text": "The dataset\nEach watch carries twenty-three attributes: brand and model, reference number, type, movement and base caliber, new and used price, year, and a full set of physical specs from case diameter and thickness to water resistance, lug width, weight, crystal, bezel material, and power reserve.\nThe collection was assembled to mirror what is genuinely popular and actually being bought, rather than to be exhaustive. Mainstream names that people search for and wear in volume are weighted accordingly, the affordable Japanese and entry Swiss brands sit alongside the Swiss icons and the independents, and obscure references that pad a list without adding insight were deliberately left out.\n\nAn honest note on accuracy. Prices and specs in this dataset are best-knowledge approximations, not figures pulled from a live transaction feed. They are good enough to reveal the shape of the market and the relationships between categories, which is what this site analyses. They are not a substitute for a dealer quote on a specific reference. Wherever the site reports a statistical result, it is describing the structure of this dataset, not making a verified claim about the global market."
+  },
+  {
+    "objectID": "about.html#how-to-read-the-site",
+    "href": "about.html#how-to-read-the-site",
+    "title": "About",
+    "section": "How to read the site",
+    "text": "How to read the site\nThe Home page is the entry point: a searchable table of every watch, the brands that carry the collection, and a ridgeline view of how price spreads across each style.\nAverage Prices digs into money. It looks at the full price distribution rather than misleading averages, plots new against used price to show what holds value, and ranks brands by the gap between the two.\nChronographs vs. Divers is a head to head between the two most collected styles, comparing price, movement mix, and the brands behind each, then uses a permutation test to check whether the price gap is real or just noise.\nWatch Landscape is the most experimental page. It runs principal component analysis and k-means clustering on the physical specs alone, with no brand or type information, to see what natural families of watches emerge from the numbers."
+  },
+  {
+    "objectID": "about.html#methods-briefly",
+    "href": "about.html#methods-briefly",
+    "title": "About",
+    "section": "Methods, briefly",
+    "text": "Methods, briefly\nEverything here uses base R and the tidyverse. Visualisations are built with ggplot2 on a shared dark theme. The clustering uses prcomp for dimensionality reduction and kmeans for the families, both standard and reproducible with a fixed seed. The inference uses permutation tests and bootstrap confidence intervals rather than parametric tests, because watch prices are heavily skewed and those resampling methods make no assumption about a normal distribution."
+  },
+  {
+    "objectID": "about.html#about-the-author",
+    "href": "about.html#about-the-author",
+    "title": "About",
+    "section": "About the author",
+    "text": "About the author\nThis project is built and maintained by Joseph Ortega, a watch enthusiast who would rather interrogate a dataset than read another listicle. It is a work in progress, and the dataset will keep growing and improving over time. Suggestions for models to add, corrections, and ideas for new analyses are always welcome."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Watch Data Analysis",
+    "section": "",
+    "text": "A thousand watches, hand-picked to mirror what is genuinely moving right now: from the $18 Casio that lives on a million wrists to the six-figure tourbillon nobody can get (or wants because wow that thing is ugly.) These are watches people actually search for, argue about, and save up for."
+  },
+  {
+    "objectID": "index.html#browse-the-whole-collection",
+    "href": "index.html#browse-the-whole-collection",
+    "title": "Watch Data Analysis",
+    "section": "Browse the whole collection",
+    "text": "Browse the whole collection\nEverything is in here. Filter by brand, sort by price, hunt for the exact reference you are chasing. The table is fully searchable."
+  },
+  {
+    "objectID": "index.html#who-actually-makes-the-watches",
+    "href": "index.html#who-actually-makes-the-watches",
+    "title": "Watch Data Analysis",
+    "section": "Who actually makes the watches",
+    "text": "Who actually makes the watches\nForget the Pareto chart. Here is the simple version. These are the brands carrying the collection, and it is no accident the list reads like the most-searched names in the hobby: the affordable Japanese giants up top, the Swiss icons close behind."
+  },
+  {
+    "objectID": "index.html#what-you-will-actually-pay",
+    "href": "index.html#what-you-will-actually-pay",
+    "title": "Watch Data Analysis",
+    "section": "What you will actually pay",
+    "text": "What you will actually pay\nThis is the chart that earns its place: watch type (a category) against price (a number), so you can see at a glance how the segments stack up. Each ridge is the full price distribution for that style. Where it is tall and narrow, prices cluster; where it spreads, the range is wild. Note the log scale, because a Casio and a Patek do not belong on the same linear axis.\n\n\n\n\n\n\n\n\n\nDivers and dress watches dominate the affordable middle, sport and chronograph pieces fan out the widest, and the luxury category sits alone in the stratosphere. From here we can dig into the questions worth asking: which movements command a premium, where the depreciation cliffs are, and which segments quietly give you the most watch for the money."
+  },
+  {
+    "objectID": "watch_landscape.html",
+    "href": "watch_landscape.html",
+    "title": "Watch Landscape",
+    "section": "",
+    "text": "Every watch in this dataset has at least seven measurable numbers: diameter, thickness, lug width, water resistance, price, weight, and power reserve. Principal component analysis collapses those seven dimensions down to two, preserving as much of the original variance as possible, so each watch becomes a single dot on a map. The further apart two dots sit, the more different those two watches are across their specs."
+  },
+  {
+    "objectID": "watch_landscape.html#what-the-two-axes-represent",
+    "href": "watch_landscape.html#what-the-two-axes-represent",
+    "title": "Watch Landscape",
+    "section": "What the two axes represent",
+    "text": "What the two axes represent\nThe arrows below point in the direction each feature pulls most strongly. Arrows pointing the same way mean those features tend to move together. Arrows pointing opposite ways mean they trade off against each other.\n\n\n\n\n\n\n\n\n\nPrice and power reserve typically pull in different directions from water resistance and thickness, which captures the familiar tension in this hobby: the most expensive watches are often the thinnest and least waterproof (dress and luxury), while robust tool watches trade price for depth rating and case volume. Smart and digital watches sit apart because zero lug width is a highly distinctive feature on this dataset."
+  },
+  {
+    "objectID": "watch_landscape.html#the-natural-families",
+    "href": "watch_landscape.html#the-natural-families",
+    "title": "Watch Landscape",
+    "section": "The natural families",
+    "text": "The natural families\nK-means finds five groupings using all seven features, not just the two PCA axes shown here. Instead of leaving them numbered, each cluster is named for the kind of watch that defines it, based on its own median price, water resistance, and proportions."
+  },
+  {
+    "objectID": "watch_landscape.html#what-defines-each-family",
+    "href": "watch_landscape.html#what-defines-each-family",
+    "title": "Watch Landscape",
+    "section": "What defines each family",
+    "text": "What defines each family\nThe heatmap below shows the average of each scaled feature per family. A warm cell means that family scores above average on that feature; a cool cell means below average. This is what justifies each name.\n\n\n\n\n\n\n\n\n\nEach family now reads on sight. Dive and Tool runs hot on water resistance and case size. Grail and Haute Horlogerie is off the charts on price while staying modest in dimensions. Smart and Digital sits apart on lug width, since every smartwatch reads as zero there. Premium and Sport carries moderate prices with beefier builds, and Dress and Everyday anchors the affordable, slim, low-water-resistance corner.\nA few watches will always sit between families, because a Rolex GMT-Master is simultaneously a tool watch and a luxury piece. PCA and k-means do not resolve that ambiguity. What they do is show that the watch market has more distinct shape to it than the usual brand-tier story suggests, and that the most important dividing lines run along specs rather than names."
+  },
+  {
+    "objectID": "average_prices.html",
+    "href": "average_prices.html",
     "title": "Average Prices",
     "section": "",
-    "text": "Prices are getting crazy"
+    "text": "Prices in this hobby behave strangely. A huge share of the market sits under a thousand dollars, then a long tail stretches all the way into six figures. That shape matters, because an average gets dragged around by a handful of grail pieces while the typical watch tells a very different story. So instead of leaning on averages, this page looks at the full distribution and at how much of a watch’s value survives the jump from new to used."
   },
   {
-    "objectID": "average prices.html#average-price-by-brand",
-    "href": "average prices.html#average-price-by-brand",
+    "objectID": "average_prices.html#how-prices-are-actually-distributed",
+    "href": "average_prices.html#how-prices-are-actually-distributed",
     "title": "Average Prices",
-    "section": "📊 Average Price by Brand",
-    "text": "📊 Average Price by Brand\nA tertiary glance at watch prices on any of the big brands these days send a chill down my spine, and should you. It seems watch brand prices just keep going up, while movements and case materials remain stagnant, and when materials do change, these brands charge an arm and a leg (looking at you Rolex.)\n\n\n\nRolex Titanium Yacht-Master 42\n\n\nBut it isn’t all doom and gloom, a lot of micro brands and entry level friendly brands still offering great bang for your buck. So without further ado, lets look at our entire dataset and look at some common trends on prices these days.\n\n\n\n\n\n\n\n\n\nPrices just seem to be going up, and watches are no exception. All of the big brands are about where you’d expect, with the “High Horology” trio dominating. Blancpain and Zenith are also unexpectedly high, followed by main staples such as Rolex and other top luxury brands.\n\n\n\n\n\n\n\n\n\nLooking at used prices is another story, however. Values for Patek Philippe on the used market actually do BETTER than their new counterparts. Just goes to show how well their new marketing strategy has been working out for them by artificially creating demand they just keep generating more buzz. AP also seems to retain their value, but the rest do show depreciation."
+    "section": "How prices are actually distributed",
+    "text": "How prices are actually distributed\nBelow is every new price in the dataset, plotted on a log scale with a smooth density curve laid over the bars. The curve uses a Gaussian (normal) kernel, so it reads as a clean estimate of where watches really cluster rather than a jagged count.\n\n\n\n\n\n\n\n\n\nThe peak lands squarely in the few-hundred to low-thousands range, which is exactly where the affordable Japanese and entry Swiss pieces live. Everything past five thousand thins out fast, and the luxury tail is a faint smear off to the right that pulls any average upward without representing what most people buy."
+  },
+  {
+    "objectID": "average_prices.html#what-survives-on-the-used-market",
+    "href": "average_prices.html#what-survives-on-the-used-market",
+    "title": "Average Prices",
+    "section": "What survives on the used market",
+    "text": "What survives on the used market\nA new price only means something next to what the watch is worth later. The plot below puts new price on one axis and used price on the other, both on log scales. The dashed line is parity, where a watch holds exactly its value. Points are coloured by retention ratio, so green pieces hold or gain while red pieces have given value back.\n\n\n\n\n\n\n\n\n\nMost of the cloud sits just under the parity line, which is the normal story: buy new, lose a little. The green points floating above the line are the well-known exceptions, the steel sport pieces and grail references that trade for more than retail. The deep red points near the bottom are the watches that shed value the moment they leave the case."
+  },
+  {
+    "objectID": "average_prices.html#where-the-depreciation-gap-is-widest",
+    "href": "average_prices.html#where-the-depreciation-gap-is-widest",
+    "title": "Average Prices",
+    "section": "Where the depreciation gap is widest",
+    "text": "Where the depreciation gap is widest\nFinally, here is the new-to-used gap brand by brand, limited to the names with enough models to be meaningful. Each row connects a brand’s median used price to its median new price, so the longer the line, the bigger the drop.\n\n\n\n\n\n\n\n\n\nThe independents and high horology names show the largest absolute gaps simply because the numbers are so big, but the interesting cases are the brands where the two dots nearly touch. Those are the watches that ask a lot up front and then refuse to give much back, which is the closest thing to a safe buy this market offers."
+  },
+  {
+    "objectID": "chronograph_vs_diver.html",
+    "href": "chronograph_vs_diver.html",
+    "title": "Chronographs vs. Divers",
+    "section": "",
+    "text": "Chronographs and divers are the two pillars of most collections, so they make a natural head to head. One is built to time things, the other to survive underwater, and that difference shows up in price, in the movements they run, and in which brands lean into each. The charts below swap the old pie slices for views that actually let you compare."
+  },
+  {
+    "objectID": "chronograph_vs_diver.html#price-side-by-side",
+    "href": "chronograph_vs_diver.html#price-side-by-side",
+    "title": "Chronographs vs. Divers",
+    "section": "Price, side by side",
+    "text": "Price, side by side\nRather than a single bar for the average, the plot below shows the entire price distribution for each style. The width of each shape is where watches pile up, and the slim box inside marks the median and the middle fifty percent. The axis is logged so the affordable end stays readable next to the expensive outliers.\n\n\n\n\n\n\n\n\n\nChronographs sit higher and spread wider, with a fat upper tail from the panda-dial icons and integrated calibers. Divers cluster tighter and lower, which fits their reputation as the more accessible everyday tool watch."
+  },
+  {
+    "objectID": "chronograph_vs_diver.html#what-is-ticking-inside",
+    "href": "chronograph_vs_diver.html#what-is-ticking-inside",
+    "title": "Chronographs vs. Divers",
+    "section": "What is ticking inside",
+    "text": "What is ticking inside\nCounts alone favour whichever style has more entries, so this view shows the share of each movement type within each category. Reading it as percentages makes the mix directly comparable even though there are more divers overall.\n\n\n\n\n\n\n\n\n\nBoth styles run mostly automatic, but divers lean on solar and quartz more than chronographs do, since a dive watch values dead-reliable timekeeping over mechanical romance. Manual winding is the rarity in both, kept alive on the chronograph side largely by a few heritage references."
+  },
+  {
+    "objectID": "chronograph_vs_diver.html#who-builds-them",
+    "href": "chronograph_vs_diver.html#who-builds-them",
+    "title": "Chronographs vs. Divers",
+    "section": "Who builds them",
+    "text": "Who builds them\nThis heatmap replaces the two pie charts entirely. It puts the most represented brands against movement type, with each cell counting how many chronograph and diver models that brand fields. Brighter cells mean more models, so you can spot at a glance where a brand concentrates its effort.\n\n\n\n\n\n\n\n\n\nThe affordable Japanese names dominate the automatic column through sheer model count, which is why divers feel so plentiful at the low end. The Swiss houses spread thinner but reach into the higher value mechanical and chronograph territory. The quartz and solar columns light up exactly where you would expect, on the brands built around tough, set-and-forget tool watches."
+  },
+  {
+    "objectID": "chronograph_vs_diver.html#is-the-price-difference-real",
+    "href": "chronograph_vs_diver.html#is-the-price-difference-real",
+    "title": "Chronographs vs. Divers",
+    "section": "Is the price difference real?",
+    "text": "Is the price difference real?\nThe violin plot earlier made it look like chronographs cost more than divers. But is that gap meaningful, or could it be a coincidence of which watches ended up in this particular dataset? A permutation test answers that directly.\nThe idea is simple: under the null hypothesis that watch type has nothing to do with price, shuffling the Type labels should produce the same kinds of median differences as the real data. We shuffle 5,000 times, record the difference in medians each time, and see where the actual observed gap lands inside that null distribution.\n\n\n\n\n\n\n\n\n\nThe blue histogram is every world where Type labels were random noise, and it never strays far from zero. The real gap is so far past it that it does not fit on the same axis, which is exactly the point: the dataset strongly supports the claim that chronographs price higher than divers, with a p-value of &lt; 0.001.\nA bootstrap 95% confidence interval for the median difference puts the true gap between $3,520 and $6,805. That range is the honest answer to how much more a chronograph actually costs, accounting for sampling uncertainty in this dataset.\n\nOne caveat worth being straight about: this dataset was built from best-knowledge approximations rather than live transaction data. The inference describes the structure of this collection, not a verified claim about the global secondhand market."
   }
 ]

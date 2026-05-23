@@ -10,11 +10,13 @@ format:
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(scales)
+source("theme_watch.R")
 
 watch_data <- read_csv("1000_Watch_Dataset.csv")
 
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
-                      fig.align = "center", dev = "png", dpi = 150)
+                      fig.align = "center", dev = "png", dpi = 150,
+                      dev.args = list(bg = "transparent"))
 
 cd <- watch_data %>% filter(Type %in% c("Chronograph", "Diver"))
 ```
@@ -28,22 +30,19 @@ Rather than a single bar for the average, the plot below shows the entire price 
 ```{r price-violin, fig.width=8.5, fig.height=5.5}
 cd %>%
   ggplot(aes(Type, `Price (New)`, fill = Type)) +
-  geom_violin(trim = FALSE, alpha = 0.9, colour = "white", linewidth = 0.4) +
-  geom_boxplot(width = 0.12, fill = "white", outlier.shape = NA, linewidth = 0.4) +
+  geom_violin(trim = FALSE, alpha = 0.9, colour = "#0e1117", linewidth = 0.4) +
+  geom_boxplot(width = 0.12, fill = "#0e1117", colour = "#c9d1d9",
+               outlier.shape = NA, linewidth = 0.5) +
   scale_y_log10(labels = label_dollar(),
                 breaks = c(100, 500, 2000, 10000, 50000)) +
-  scale_fill_brewer(palette = "Set2", guide = "none") +
+  scale_fill_manual(values = c(Chronograph = watch_accent, Diver = "#4CC9F0"),
+                    guide = "none") +
   labs(
     title = "Price distribution: chronograph versus diver",
     subtitle = "Full spread of new prices, with median and interquartile box (log scale)",
     x = NULL, y = "Price (new)"
   ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    plot.title    = element_text(face = "bold", size = 16),
-    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
-    panel.grid.minor = element_blank()
-  )
+  theme_watch()
 ```
 
 Chronographs sit higher and spread wider, with a fat upper tail from the panda-dial icons and integrated calibers. Divers cluster tighter and lower, which fits their reputation as the more accessible everyday tool watch.
@@ -56,30 +55,24 @@ Counts alone favour whichever style has more entries, so this view shows the sha
 cd %>%
   count(Type, `Movement Type`) %>%
   ggplot(aes(Type, n, fill = `Movement Type`)) +
-  geom_col(position = "fill", width = 0.62, colour = "white", linewidth = 0.4) +
+  geom_col(position = "fill", width = 0.62, colour = "#0e1117", linewidth = 0.5) +
   scale_y_continuous(labels = percent_format()) +
-  scale_fill_brewer(palette = "Dark2", name = "Movement") +
+  scale_fill_watch(name = "Movement") +
   coord_flip() +
   labs(
     title = "Movement mix within each style",
     subtitle = "Share of movement types, normalised per category",
     x = NULL, y = NULL
   ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    plot.title    = element_text(face = "bold", size = 16),
-    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.position = "top"
-  )
+  theme_watch() +
+  theme(panel.grid.major.y = element_blank(), legend.position = "top")
 ```
 
 Both styles run mostly automatic, but divers lean on solar and quartz more than chronographs do, since a dive watch values dead-reliable timekeeping over mechanical romance. Manual winding is the rarity in both, kept alive on the chronograph side largely by a few heritage references.
 
 ## Who builds them
 
-This heatmap replaces the two pie charts entirely. It puts the most represented brands against movement type, with each cell counting how many chronograph and diver models that brand fields. Darker cells mean more models, so you can spot at a glance where a brand concentrates its effort.
+This heatmap replaces the two pie charts entirely. It puts the most represented brands against movement type, with each cell counting how many chronograph and diver models that brand fields. Brighter cells mean more models, so you can spot at a glance where a brand concentrates its effort.
 
 ```{r brand-heatmap, fig.width=8.5, fig.height=6.5}
 top_b <- cd %>% count(Brand, sort = TRUE) %>% slice_max(n, n = 12) %>% pull(Brand)
@@ -89,21 +82,18 @@ cd %>%
   count(Brand, `Movement Type`) %>%
   mutate(Brand = fct_reorder(Brand, n, .fun = sum)) %>%
   ggplot(aes(`Movement Type`, Brand, fill = n)) +
-  geom_tile(colour = "white", linewidth = 1.2) +
-  geom_text(aes(label = n), colour = "grey15", size = 3.5, fontface = "bold") +
-  scale_fill_distiller(palette = "YlGnBu", direction = 1, name = "Models") +
+  geom_tile(colour = "#0e1117", linewidth = 1.5) +
+  geom_text(aes(label = n), colour = "#f0f6fc", size = 3.5, fontface = "bold") +
+  scale_fill_viridis_c(option = "mako", begin = 0.15, end = 0.7,
+                       direction = 1, name = "Models") +
   labs(
     title = "Top brands by movement type",
     subtitle = "Chronograph and diver models among the most represented brands",
     x = NULL, y = NULL
   ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    plot.title    = element_text(face = "bold", size = 16),
-    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
-    panel.grid = element_blank(),
-    axis.text.y = element_text(face = "bold")
-  )
+  theme_watch() +
+  theme(panel.grid = element_blank(),
+        axis.text.y = element_text(face = "bold", colour = watch_text))
 ```
 
 The affordable Japanese names dominate the automatic column through sheer model count, which is why divers feel so plentiful at the low end. The Swiss houses spread thinner but reach into the higher value mechanical and chronograph territory. The quartz and solar columns light up exactly where you would expect, on the brands built around tough, set-and-forget tool watches.
@@ -115,13 +105,11 @@ The violin plot earlier made it look like chronographs cost more than divers. Bu
 The idea is simple: under the null hypothesis that watch type has nothing to do with price, shuffling the Type labels should produce the same kinds of median differences as the real data. We shuffle 5,000 times, record the difference in medians each time, and see where the actual observed gap lands inside that null distribution.
 
 ```{r perm-test, fig.width=9, fig.height=5.5}
-# Compute observed statistic: median(Chronograph) - median(Diver)
 cd_clean <- cd %>% filter(!is.na(`Price (New)`))
 
 obs_stat <- median(cd_clean$`Price (New)`[cd_clean$Type == "Chronograph"]) -
             median(cd_clean$`Price (New)`[cd_clean$Type == "Diver"])
 
-# Permutation distribution
 set.seed(42)
 prices_vec <- cd_clean$`Price (New)`
 types_vec  <- cd_clean$Type
@@ -132,7 +120,8 @@ null_dist <- replicate(5000, {
   median(prices_vec[shuffled == "Diver"])
 })
 
-p_val <- mean(abs(null_dist) >= abs(obs_stat))
+p_val  <- mean(abs(null_dist) >= abs(obs_stat))
+n_sd   <- obs_stat / sd(null_dist)
 
 # Bootstrap 95% CI for the observed difference
 boot_diffs <- replicate(5000, {
@@ -143,40 +132,41 @@ boot_diffs <- replicate(5000, {
 })
 ci <- quantile(boot_diffs, c(0.025, 0.975))
 
-# Plot
-tibble(stat = null_dist) %>%
-  ggplot(aes(stat)) +
-  geom_histogram(bins = 70, fill = "#b8cfe8", colour = "white") +
-  geom_vline(xintercept =  obs_stat, colour = "#b2182b", linewidth = 1.3) +
-  geom_vline(xintercept = -obs_stat, colour = "#b2182b", linewidth = 1.3,
-             linetype = "dashed") +
-  annotate("label",
-           x = obs_stat, y = Inf, vjust = 1.6,
-           label = sprintf("Observed: $%s", comma(round(obs_stat))),
-           colour = "#b2182b", fill = "white",
-           size = 3.5, fontface = "bold") +
+# The observed gap sits far beyond the null cloud, so we keep the axis on the
+# null distribution and annotate the observed value as off-chart rather than
+# letting it stretch the histogram into a sliver.
+xr   <- range(null_dist)
+pad  <- diff(xr) * 0.10
+peak <- max(hist(null_dist, breaks = 70, plot = FALSE)$counts)
+
+ggplot(tibble(stat = null_dist), aes(stat)) +
+  geom_histogram(bins = 70, fill = "#4CC9F0", colour = NA, alpha = 0.85) +
+  annotate("segment",
+           x = xr[2] - pad * 0.3, xend = xr[2] + pad,
+           y = peak * 0.7, yend = peak * 0.7,
+           arrow = arrow(length = unit(0.25, "cm")),
+           colour = watch_accent, linewidth = 1) +
+  annotate("text",
+           x = xr[2] + pad, y = peak * 0.82, hjust = 1,
+           colour = watch_accent, fontface = "bold", size = 3.7, lineheight = 0.95,
+           label = sprintf("Observed gap: %s\n%.1f SD beyond the null\n(p %s)",
+                           label_dollar()(round(obs_stat)), n_sd,
+                           ifelse(p_val < 0.001, "< 0.001", paste("=", round(p_val, 3))))) +
   scale_x_continuous(labels = label_dollar()) +
+  coord_cartesian(xlim = c(xr[1] - pad, xr[2] + pad), clip = "off") +
   labs(
-    title    = "Permutation test: chronograph vs diver median price",
-    subtitle = sprintf(
-      "5,000 shuffles under the null. Observed difference: %s   p-value: %s",
-      label_dollar()(round(obs_stat)),
-      ifelse(p_val < 0.001, "< 0.001", round(p_val, 3))
-    ),
+    title = "Permutation test: chronograph vs diver median price",
+    subtitle = "5,000 shuffles under the null hypothesis of no price difference",
     x = "Permuted difference in medians (Chronograph minus Diver)",
     y = "Count"
   ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    plot.title    = element_text(face = "bold", size = 16),
-    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
-    panel.grid.minor = element_blank()
-  )
+  theme_watch()
 ```
 
-The observed gap is the solid red line. Every bar in the histogram is a world where Type labels were random noise. The two lines sit far outside the null cloud, which means the dataset strongly supports the claim that chronographs price higher than divers: the p-value is `r ifelse(p_val < 0.001, "< 0.001", round(p_val, 3))`.
+The blue histogram is every world where Type labels were random noise, and it never strays far from zero. The real gap is so far past it that it does not fit on the same axis, which is exactly the point: the dataset strongly supports the claim that chronographs price higher than divers, with a p-value of `r ifelse(p_val < 0.001, "< 0.001", round(p_val, 3))`.
 
-A bootstrap 95% confidence interval for the median difference puts the true gap between `r label_dollar()(round(ci[1]))` and `r label_dollar()(round(ci[2]))`. That range is the honest answer to "how much more does a chronograph actually cost", accounting for sampling uncertainty in this dataset.
+A bootstrap 95% confidence interval for the median difference puts the true gap between `r label_dollar()(round(ci[1]))` and `r label_dollar()(round(ci[2]))`. That range is the honest answer to how much more a chronograph actually costs, accounting for sampling uncertainty in this dataset.
 
+::: {.watch-note}
 One caveat worth being straight about: this dataset was built from best-knowledge approximations rather than live transaction data. The inference describes the structure of this collection, not a verified claim about the global secondhand market.
-
+:::

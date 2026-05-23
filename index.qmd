@@ -1,8 +1,6 @@
 ---
-title: "The 1000 Watch Project"
+title: "Watch Data Analysis"
 subtitle: "A data-driven field guide to what people actually wear, buy, and obsess over."
-author: Joseph Ortega
-date: today
 format:
   html:
     page-layout: full
@@ -14,15 +12,16 @@ library(tidyverse)
 library(DT)
 library(ggridges)     # install.packages("ggridges")
 library(scales)
-library(RColorBrewer)
+source("theme_watch.R")
 
 watch_data <- read_csv("1000_Watch_Dataset.csv")
 
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
-                      fig.align = "center", dev = "png", dpi = 150)
+                      fig.align = "center", dev = "png", dpi = 150,
+                      dev.args = list(bg = "transparent"))
 ```
 
-A thousand watches, hand-picked to mirror what's genuinely moving right now: from the \$18 Casio that lives on a million wrists to the six-figure tourbillon nobody can get. No phantom references, no made-up micro-brands padding the list — just the watches people actually search for, argue about, and save up for.
+A thousand watches, hand-picked to mirror what is genuinely moving right now: from the \$18 Casio that lives on a million wrists to the six-figure tourbillon nobody can get (or wants because wow that thing is ugly.) These are watches people actually search for, argue about, and save up for.
 
 ```{=html}
 <div class="stat-grid">
@@ -39,7 +38,7 @@ A thousand watches, hand-picked to mirror what's genuinely moving right now: fro
     <div class="stat-label">Watch categories</div>
   </div>
   <div class="stat-card">
-    <div class="stat-num">$18&nbsp;–&nbsp;$400K</div>
+    <div class="stat-num">$18 to $400,000</div>
     <div class="stat-label">Price range (new)</div>
   </div>
 </div>
@@ -47,7 +46,7 @@ A thousand watches, hand-picked to mirror what's genuinely moving right now: fro
 
 ## Browse the whole collection
 
-Everything is in here. Filter by brand, sort by price, hunt for the exact reference you're chasing, the table is fully searchable.
+Everything is in here. Filter by brand, sort by price, hunt for the exact reference you are chasing. The table is fully searchable.
 
 ```{r table}
 watch_data %>%
@@ -71,7 +70,7 @@ watch_data %>%
 
 ## Who actually makes the watches
 
-These are the brands carrying the collection, and it's no accident the list reads like the most-searched names in the hobby: the affordable Japanese giants up top, the Swiss icons close behind.
+Forget the Pareto chart. Here is the simple version. These are the brands carrying the collection, and it is no accident the list reads like the most-searched names in the hobby: the affordable Japanese giants up top, the Swiss icons close behind.
 
 ```{r brands, fig.width=9, fig.height=6}
 brand_counts <- watch_data %>%
@@ -81,53 +80,46 @@ brand_counts <- watch_data %>%
 ggplot(brand_counts, aes(x = fct_reorder(Brand, n), y = n, fill = n)) +
   geom_col(width = 0.78) +
   geom_text(aes(label = n), hjust = -0.25, size = 3.6,
-            colour = "grey25", fontface = "bold") +
+            colour = watch_text, fontface = "bold") +
   coord_flip(clip = "off") +
-  scale_fill_distiller(palette = "GnBu", direction = 1, guide = "none") +
+  scale_fill_viridis_c(option = "inferno", begin = 0.25, end = 0.92,
+                       guide = "none") +
   scale_y_continuous(expand = expansion(mult = c(0, 0.12))) +
   labs(
     title = "The 12 brands carrying the collection",
     subtitle = "Count of models in the dataset",
     x = NULL, y = NULL
   ) +
-  theme_minimal(base_size = 13) +
+  theme_watch() +
   theme(
-    plot.title    = element_text(face = "bold", size = 16),
-    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
     panel.grid.major.y = element_blank(),
-    panel.grid.minor   = element_blank(),
-    axis.text.y = element_text(face = "bold")
+    axis.text.y = element_text(face = "bold", colour = watch_text)
   )
 ```
 
-## What you'll actually pay
+## What you will actually pay
 
-This is the chart that earns its place: watch *type* (a category) against *price* (a number), so you can see at a glance how the segments stack up. Each ridge is the full price distribution for that style, where it's tall and narrow, prices cluster; where it spreads, the range is wild. Note the log scale, because a Casio and a Patek do not belong on the same linear axis.
+This is the chart that earns its place: watch *type* (a category) against *price* (a number), so you can see at a glance how the segments stack up. Each ridge is the full price distribution for that style. Where it is tall and narrow, prices cluster; where it spreads, the range is wild. Note the log scale, because a Casio and a Patek do not belong on the same linear axis.
 
 ```{r ridges, fig.width=9, fig.height=7}
 watch_data %>%
   add_count(Type) %>%
-  filter(n >= 20) %>%                     # keep the meaningful categories
+  filter(n >= 20) %>%
   mutate(Type = fct_reorder(Type, `Price (New)`, .fun = median)) %>%
   ggplot(aes(x = `Price (New)`, y = Type, fill = after_stat(x))) +
   geom_density_ridges_gradient(scale = 2.1, rel_min_height = 0.01,
-                               colour = "white", linewidth = 0.4) +
+                               colour = "#0e1117", linewidth = 0.4) +
   scale_x_log10(labels = label_dollar(),
                 breaks = c(50, 250, 1000, 5000, 25000, 1e5)) +
-  scale_fill_distiller(palette = "Spectral", trans = "log10",
+  scale_fill_viridis_c(option = "inferno", trans = "log10",
                        labels = label_dollar(), name = "Price") +
   labs(
     title = "Price distribution by watch type",
     subtitle = "Each ridge is the spread of new prices for that style (log scale)",
     x = "Price (new)", y = NULL
   ) +
-  theme_ridges(font_size = 13, grid = TRUE) +
-  theme(
-    plot.title    = element_text(face = "bold", size = 16),
-    plot.subtitle = element_text(colour = "grey45"),
-    legend.position = "right",
-    axis.title.x = element_text(hjust = 0.5)
-  )
+  theme_watch() +
+  theme(axis.title.x = element_text(hjust = 0.5))
 ```
 
 Divers and dress watches dominate the affordable middle, sport and chronograph pieces fan out the widest, and the luxury category sits alone in the stratosphere. From here we can dig into the questions worth asking: which movements command a premium, where the depreciation cliffs are, and which segments quietly give you the most watch for the money.

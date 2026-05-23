@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Joseph Ortega">
 
-<title>About – The 1000 Watch Project</title>
+<title>Average Prices – The 1000 Watch Project</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -98,7 +97,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./average_prices.html"> 
+    <a class="nav-link active" href="./average_prices.html" aria-current="page"> 
 <span class="menu-text">Average Prices</span></a>
   </li>  
   <li class="nav-item">
@@ -110,7 +109,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Watch Landscape</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./about.html" aria-current="page"> 
+    <a class="nav-link" href="./about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
@@ -129,11 +128,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-this-is" id="toc-what-this-is" class="nav-link active" data-scroll-target="#what-this-is">What this is</a></li>
-  <li><a href="#the-dataset" id="toc-the-dataset" class="nav-link" data-scroll-target="#the-dataset">The dataset</a></li>
-  <li><a href="#how-to-read-the-site" id="toc-how-to-read-the-site" class="nav-link" data-scroll-target="#how-to-read-the-site">How to read the site</a></li>
-  <li><a href="#methods-briefly" id="toc-methods-briefly" class="nav-link" data-scroll-target="#methods-briefly">Methods, briefly</a></li>
-  <li><a href="#about-the-author" id="toc-about-the-author" class="nav-link" data-scroll-target="#about-the-author">About the author</a></li>
+  <li><a href="#how-prices-are-actually-distributed" id="toc-how-prices-are-actually-distributed" class="nav-link active" data-scroll-target="#how-prices-are-actually-distributed">How prices are actually distributed</a></li>
+  <li><a href="#what-survives-on-the-used-market" id="toc-what-survives-on-the-used-market" class="nav-link" data-scroll-target="#what-survives-on-the-used-market">What survives on the used market</a></li>
+  <li><a href="#where-the-depreciation-gap-is-widest" id="toc-where-the-depreciation-gap-is-widest" class="nav-link" data-scroll-target="#where-the-depreciation-gap-is-widest">Where the depreciation gap is widest</a></li>
   </ul>
 </nav>
     </div>
@@ -142,20 +139,14 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">About</h1>
-<p class="subtitle lead">What this project is, where the data comes from, and how to read it.</p>
+<h1 class="title">Average Prices</h1>
+<p class="subtitle lead">What the market charges, what it gives back, and where the value hides.</p>
 </div>
 
 
 
 <div class="quarto-title-meta column-page-left">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Joseph Ortega </p>
-          </div>
-  </div>
     
   
     
@@ -166,51 +157,48 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="what-this-is" class="level2">
-<h2 class="anchored" data-anchor-id="what-this-is">What this is</h2>
-<p>The 1000 Watch Project is an attempt to look at the watch world through data instead of hype. Most watch coverage online is either a spec sheet or a sales pitch. This site tries to be neither. It takes a curated set of a thousand watches and asks the questions enthusiasts actually argue about: what does a given style really cost, how much value survives the resale market, and whether the categories we throw around hold up when you cluster watches purely by their measurements.</p>
-<p>It is built as a static site with <a href="https://quarto.org">Quarto</a> and analysed entirely in R with the tidyverse, so every chart on every page is reproducible from the same single dataset.</p>
-<div class="stat-grid">
-  <div class="stat-card">
-    <div class="stat-num">1,000</div>
-    <div class="stat-label">Watches</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num">121</div>
-    <div class="stat-label">Brands</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num">23</div>
-    <div class="stat-label">Attributes each</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num">21</div>
-    <div class="stat-label">Countries of origin</div>
-  </div>
+<p>Prices in this hobby behave strangely. A huge share of the market sits under a thousand dollars, then a long tail stretches all the way into six figures. That shape matters, because an average gets dragged around by a handful of grail pieces while the typical watch tells a very different story. So instead of leaning on averages, this page looks at the full distribution and at how much of a watch’s value survives the jump from new to used.</p>
+<section id="how-prices-are-actually-distributed" class="level2">
+<h2 class="anchored" data-anchor-id="how-prices-are-actually-distributed">How prices are actually distributed</h2>
+<p>Below is every new price in the dataset, plotted on a log scale with a smooth density curve laid over the bars. The curve uses a Gaussian (normal) kernel, so it reads as a clean estimate of where watches really cluster rather than a jagged count.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="average_prices_files/figure-html/price-kde-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1350"></p>
+</figure>
 </div>
-</section>
-<section id="the-dataset" class="level2">
-<h2 class="anchored" data-anchor-id="the-dataset">The dataset</h2>
-<p>Each watch carries twenty-three attributes: brand and model, reference number, type, movement and base caliber, new and used price, year, and a full set of physical specs from case diameter and thickness to water resistance, lug width, weight, crystal, bezel material, and power reserve.</p>
-<p>The collection was assembled to mirror what is genuinely popular and actually being bought, rather than to be exhaustive. Mainstream names that people search for and wear in volume are weighted accordingly, the affordable Japanese and entry Swiss brands sit alongside the Swiss icons and the independents, and obscure references that pad a list without adding insight were deliberately left out.</p>
-<div class="watch-note">
-<p><strong>An honest note on accuracy.</strong> Prices and specs in this dataset are best-knowledge approximations, not figures pulled from a live transaction feed. They are good enough to reveal the shape of the market and the relationships between categories, which is what this site analyses. They are not a substitute for a dealer quote on a specific reference. Wherever the site reports a statistical result, it is describing the structure of this dataset, not making a verified claim about the global market.</p>
 </div>
+</div>
+<p>The peak lands squarely in the few-hundred to low-thousands range, which is exactly where the affordable Japanese and entry Swiss pieces live. Everything past five thousand thins out fast, and the luxury tail is a faint smear off to the right that pulls any average upward without representing what most people buy.</p>
 </section>
-<section id="how-to-read-the-site" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-read-the-site">How to read the site</h2>
-<p>The <strong>Home</strong> page is the entry point: a searchable table of every watch, the brands that carry the collection, and a ridgeline view of how price spreads across each style.</p>
-<p><strong>Average Prices</strong> digs into money. It looks at the full price distribution rather than misleading averages, plots new against used price to show what holds value, and ranks brands by the gap between the two.</p>
-<p><strong>Chronographs vs.&nbsp;Divers</strong> is a head to head between the two most collected styles, comparing price, movement mix, and the brands behind each, then uses a permutation test to check whether the price gap is real or just noise.</p>
-<p><strong>Watch Landscape</strong> is the most experimental page. It runs principal component analysis and k-means clustering on the physical specs alone, with no brand or type information, to see what natural families of watches emerge from the numbers.</p>
+<section id="what-survives-on-the-used-market" class="level2">
+<h2 class="anchored" data-anchor-id="what-survives-on-the-used-market">What survives on the used market</h2>
+<p>A new price only means something next to what the watch is worth later. The plot below puts new price on one axis and used price on the other, both on log scales. The dashed line is parity, where a watch holds exactly its value. Points are coloured by retention ratio, so green pieces hold or gain while red pieces have given value back.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="average_prices_files/figure-html/new-vs-used-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1350"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Most of the cloud sits just under the parity line, which is the normal story: buy new, lose a little. The green points floating above the line are the well-known exceptions, the steel sport pieces and grail references that trade for more than retail. The deep red points near the bottom are the watches that shed value the moment they leave the case.</p>
 </section>
-<section id="methods-briefly" class="level2">
-<h2 class="anchored" data-anchor-id="methods-briefly">Methods, briefly</h2>
-<p>Everything here uses base R and the tidyverse. Visualisations are built with ggplot2 on a shared dark theme. The clustering uses <code>prcomp</code> for dimensionality reduction and <code>kmeans</code> for the families, both standard and reproducible with a fixed seed. The inference uses permutation tests and bootstrap confidence intervals rather than parametric tests, because watch prices are heavily skewed and those resampling methods make no assumption about a normal distribution.</p>
-</section>
-<section id="about-the-author" class="level2">
-<h2 class="anchored" data-anchor-id="about-the-author">About the author</h2>
-<p>This project is built and maintained by Joseph Ortega, a watch enthusiast who would rather interrogate a dataset than read another listicle. It is a work in progress, and the dataset will keep growing and improving over time. Suggestions for models to add, corrections, and ideas for new analyses are always welcome.</p>
+<section id="where-the-depreciation-gap-is-widest" class="level2">
+<h2 class="anchored" data-anchor-id="where-the-depreciation-gap-is-widest">Where the depreciation gap is widest</h2>
+<p>Finally, here is the new-to-used gap brand by brand, limited to the names with enough models to be meaningful. Each row connects a brand’s median used price to its median new price, so the longer the line, the bigger the drop.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="average_prices_files/figure-html/dumbbell-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1350"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The independents and high horology names show the largest absolute gaps simply because the numbers are so big, but the interesting cases are the brands where the two dots nearly touch. Those are the watches that ask a lot up front and then refuse to give much back, which is the closest thing to a safe buy this market offers.</p>
 
 
 </section>

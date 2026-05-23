@@ -8,46 +8,38 @@ format:
 ---
 
 ```{r setup, include=FALSE}
-# Required packages: tidyverse, scales
-# No additional installs needed — all base R stats
 library(tidyverse)
 library(scales)
+source("theme_watch.R")
 
 watch_data <- read_csv("1000_Watch_Dataset.csv")
 
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
-                      fig.align = "center", dev = "png", dpi = 150)
+                      fig.align = "center", dev = "png", dpi = 150,
+                      dev.args = list(bg = "transparent"))
 ```
 
 ```{r prep, include=FALSE}
 # Parse string columns and drop the one non-watch entry (Atmos clock, diameter = 0)
 landscape_df <- watch_data %>%
   mutate(
-    weight_g       = parse_number(`Weight (grams)`),
-    power_res_h    = parse_number(`Power Reserve (hours)`)
+    weight_g    = parse_number(`Weight (grams)`),
+    power_res_h = parse_number(`Power Reserve (hours)`)
   ) %>%
-  filter(`Case Diameter (mm)` > 0) %>%
-  filter(!is.na(`Price (New)`)) %>%
-  drop_na(`Case Diameter (mm)`, `Case Thickness (mm)`,
-          `Lug Width (mm)`, `Water Resistance (m)`,
-          weight_g, power_res_h)
+  filter(`Case Diameter (mm)` > 0, !is.na(`Price (New)`)) %>%
+  drop_na(`Case Diameter (mm)`, `Case Thickness (mm)`, `Lug Width (mm)`,
+          `Water Resistance (m)`, weight_g, power_res_h)
 
-# Scale and run PCA on seven spec / price features
 feat_names <- c("Case Diameter (mm)", "Case Thickness (mm)", "Lug Width (mm)",
                 "Water Resistance (m)", "Price (New)", "weight_g", "power_res_h")
 
-pca_mat <- landscape_df %>%
-  select(all_of(feat_names)) %>%
-  scale()
+pca_mat <- landscape_df %>% select(all_of(feat_names)) %>% scale()
 
 set.seed(42)
-pca_result  <- prcomp(pca_mat, center = FALSE, scale. = FALSE)
-km_result   <- kmeans(pca_mat, centers = 5, nstart = 25)
+pca_result <- prcomp(pca_mat, center = FALSE, scale. = FALSE)
+km_result  <- kmeans(pca_mat, centers = 5, nstart = 25)
+var_exp    <- summary(pca_result)$importance[2, 1:2] * 100
 
-# Variance explained
-var_exp <- summary(pca_result)$importance[2, 1:2] * 100
-
-# Tidy scores for plotting
 scores_df <- landscape_df %>%
   mutate(
     PC1     = pca_result$x[, 1],
@@ -62,19 +54,39 @@ scores_df <- landscape_df %>%
     )
   )
 
-# Biplot loadings: scale arrows to sit inside the scatter
-arrow_scale <- max(abs(c(scores_df$PC1, scores_df$PC2))) * 0.72
-short_names  <- c("Diameter", "Thickness", "Lug Width",
-                  "Water Res.", "Price", "Weight", "Power Res.")
+# --- Give clusters meaningful names, robust to k-means numbering ---
+prof <- scores_df %>%
+  group_by(cluster) %>%
+  summarise(price = median(`Price (New)`),
+            wr    = median(`Water Resistance (m)`),
+            lug   = median(`Lug Width (mm)`),
+            .groups = "drop")
 
+lab   <- setNames(rep(NA_character_, nrow(prof)), as.character(prof$cluster))
+avail <- as.character(prof$cluster)
+take  <- function(col, fn) {
+  sub <- prof[as.character(prof$cluster) %in% avail, ]
+  as.character(sub$cluster[fn(sub[[col]])])
+}
+c_smart <- take("lug",   which.min); lab[c_smart] <- "Smart & Digital";          avail <- setdiff(avail, c_smart)
+c_grail <- take("price", which.max); lab[c_grail] <- "Grail & Haute Horlogerie"; avail <- setdiff(avail, c_grail)
+c_dive  <- take("wr",    which.max); lab[c_dive]  <- "Dive & Tool";              avail <- setdiff(avail, c_dive)
+c_prem  <- take("price", which.max); lab[c_prem]  <- "Premium & Sport";          avail <- setdiff(avail, c_prem)
+lab[avail] <- "Dress & Everyday"
+
+label_levels <- c("Dress & Everyday", "Premium & Sport", "Dive & Tool",
+                  "Grail & Haute Horlogerie", "Smart & Digital")
+scores_df <- scores_df %>%
+  mutate(cluster_label = factor(lab[as.character(cluster)], levels = label_levels))
+
+# Biplot loadings scaled to sit inside the scatter
+arrow_scale <- max(abs(c(scores_df$PC1, scores_df$PC2))) * 0.72
+short_names <- c("Diameter", "Thickness", "Lug Width",
+                 "Water Res.", "Price", "Weight", "Power Res.")
 loadings_df <- as_tibble(pca_result$rotation[, 1:2]) %>%
-  mutate(
-    feature = short_names,
-    xend    = PC1 * arrow_scale,
-    yend    = PC2 * arrow_scale,
-    xlab    = xend * 1.17,
-    ylab    = yend * 1.17
-  )
+  mutate(feature = short_names,
+         xend = PC1 * arrow_scale, yend = PC2 * arrow_scale,
+         xlab = xend * 1.17,       ylab = yend * 1.17)
 ```
 
 Every watch in this dataset has at least seven measurable numbers: diameter, thickness, lug width, water resistance, price, weight, and power reserve. Principal component analysis collapses those seven dimensions down to two, preserving as much of the original variance as possible, so each watch becomes a single dot on a map. The further apart two dots sit, the more different those two watches are across their specs.
@@ -85,118 +97,85 @@ The arrows below point in the direction each feature pulls most strongly. Arrows
 
 ```{r biplot, fig.width=9, fig.height=6.5}
 ggplot(scores_df, aes(PC1, PC2)) +
-  geom_point(aes(colour = broad), alpha = 0.35, size = 1.4) +
-  geom_segment(
-    data = loadings_df,
-    aes(x = 0, y = 0, xend = xend, yend = yend),
-    arrow = arrow(length = unit(0.22, "cm"), type = "closed"),
-    colour = "#2c2c2c", linewidth = 0.85
-  ) +
-  geom_text(
-    data = loadings_df,
-    aes(x = xlab, y = ylab, label = feature),
-    size = 3.3, colour = "#2c2c2c", fontface = "bold"
-  ) +
-  scale_colour_brewer(palette = "Set1", name = NULL) +
+  geom_point(aes(colour = broad), alpha = 0.4, size = 1.5) +
+  geom_segment(data = loadings_df,
+               aes(x = 0, y = 0, xend = xend, yend = yend),
+               arrow = arrow(length = unit(0.22, "cm"), type = "closed"),
+               colour = "#f0f6fc", linewidth = 0.85) +
+  geom_text(data = loadings_df, aes(x = xlab, y = ylab, label = feature),
+            size = 3.3, colour = "#f0f6fc", fontface = "bold") +
+  scale_colour_watch(name = NULL) +
   labs(
-    title   = "PCA biplot: seven spec features across 999 watches",
-    subtitle = sprintf("PC1 explains %.1f%% of variance, PC2 %.1f%%",
-                       var_exp[1], var_exp[2]),
+    title = "PCA biplot: seven spec features across the collection",
+    subtitle = sprintf("PC1 explains %.1f%% of variance, PC2 %.1f%%", var_exp[1], var_exp[2]),
     x = sprintf("PC1 (%.1f%%)", var_exp[1]),
     y = sprintf("PC2 (%.1f%%)", var_exp[2])
   ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    plot.title    = element_text(face = "bold", size = 16),
-    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
-    panel.grid.minor  = element_blank(),
-    legend.position   = "top",
-    legend.text       = element_text(size = 10)
-  )
+  theme_watch() +
+  theme(legend.position = "top", legend.text = element_text(size = 10))
 ```
 
 Price and power reserve typically pull in different directions from water resistance and thickness, which captures the familiar tension in this hobby: the most expensive watches are often the thinnest and least waterproof (dress and luxury), while robust tool watches trade price for depth rating and case volume. Smart and digital watches sit apart because zero lug width is a highly distinctive feature on this dataset.
 
-## The natural clusters
+## The natural families
 
-K-means finds five groupings using all seven features, not just the two PCA axes shown here. The clusters are plotted back onto the same map so you can see how they carve up the space.
+K-means finds five groupings using all seven features, not just the two PCA axes shown here. Instead of leaving them numbered, each cluster is named for the kind of watch that defines it, based on its own median price, water resistance, and proportions.
 
 ```{r clusters, fig.width=9, fig.height=6.5}
-ggplot(scores_df, aes(PC1, PC2, colour = cluster)) +
-  geom_point(alpha = 0.55, size = 1.8) +
-  stat_ellipse(aes(group = cluster), level = 0.75,
+ggplot(scores_df, aes(PC1, PC2, colour = cluster_label)) +
+  geom_point(alpha = 0.6, size = 1.8) +
+  stat_ellipse(aes(group = cluster_label), level = 0.75,
                linewidth = 0.5, linetype = "dashed") +
-  scale_colour_brewer(palette = "Dark2", name = "Cluster") +
+  scale_colour_watch(name = "Watch family") +
   labs(
-    title    = "K-means clustering on spec features (k = 5)",
-    subtitle = "Ellipses mark the 75% density region of each cluster",
+    title = "Five watch families, found by clustering on specs",
+    subtitle = "Ellipses mark the 75% density region of each family",
     x = sprintf("PC1 (%.1f%%)", var_exp[1]),
     y = sprintf("PC2 (%.1f%%)", var_exp[2])
   ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    plot.title    = element_text(face = "bold", size = 16),
-    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
-    panel.grid.minor = element_blank(),
-    legend.position  = "top"
-  )
+  theme_watch() +
+  theme(legend.position = "top")
 ```
 
-## What defines each cluster
+## What defines each family
 
-The heatmap below shows the average of each scaled feature per cluster. A warm cell means that cluster scores above average on that feature; a cool cell means below average. This is what lets you put a label on each cluster without guessing.
+The heatmap below shows the average of each scaled feature per family. A warm cell means that family scores above average on that feature; a cool cell means below average. This is what justifies each name.
 
-```{r cluster-profiles, fig.width=9, fig.height=5.5}
-# Compute per-cluster mean of the original (unscaled) features
+```{r cluster-profiles, fig.width=9, fig.height=5}
 profile_long <- scores_df %>%
-  select(cluster,
-         Diameter   = `Case Diameter (mm)`,
-         Thickness  = `Case Thickness (mm)`,
-         `Lug Width` = `Lug Width (mm)`,
+  select(cluster_label,
+         Diameter     = `Case Diameter (mm)`,
+         Thickness    = `Case Thickness (mm)`,
+         `Lug Width`  = `Lug Width (mm)`,
          `Water Res.` = `Water Resistance (m)`,
-         Price      = `Price (New)`,
-         Weight     = weight_g,
+         Price        = `Price (New)`,
+         Weight       = weight_g,
          `Power Res.` = power_res_h) %>%
-  group_by(cluster) %>%
+  group_by(cluster_label) %>%
   summarise(across(everything(), mean), .groups = "drop") %>%
-  pivot_longer(-cluster, names_to = "feature", values_to = "mean_val") %>%
-  # Z-score across clusters so features are comparable
+  pivot_longer(-cluster_label, names_to = "feature", values_to = "mean_val") %>%
   group_by(feature) %>%
   mutate(z = (mean_val - mean(mean_val)) / sd(mean_val)) %>%
   ungroup()
 
-ggplot(profile_long, aes(feature, cluster, fill = z)) +
-  geom_tile(colour = "white", linewidth = 1) +
-  geom_text(aes(label = round(z, 1)), size = 3.4,
-            colour = ifelse(abs(profile_long$z) > 1.2, "white", "grey20"),
-            fontface = "bold") +
-  scale_fill_distiller(palette = "RdBu", direction = -1,
-                       limits = c(-2.2, 2.2), oob = squish,
+ggplot(profile_long, aes(feature, fct_rev(cluster_label), fill = z)) +
+  geom_tile(colour = "#0e1117", linewidth = 1.2) +
+  geom_text(aes(label = round(z, 1)), size = 3.4, fontface = "bold",
+            colour = ifelse(abs(profile_long$z) > 0.9, "#0e1117", "#c9d1d9")) +
+  scale_fill_gradient2(low = "#4CC9F0", mid = "#30363d", high = watch_accent,
+                       midpoint = 0, limits = c(-2.2, 2.2), oob = squish,
                        name = "Z-score") +
   labs(
-    title    = "Cluster feature profiles (z-scored means)",
-    subtitle = "Red = above average for that feature, blue = below average",
-    x = NULL, y = "Cluster"
+    title = "Family profiles (z-scored feature means)",
+    subtitle = "Yellow = above average for that feature, blue = below average",
+    x = NULL, y = NULL
   ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    plot.title    = element_text(face = "bold", size = 16),
-    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
-    panel.grid    = element_blank(),
-    axis.text.x   = element_text(face = "bold")
-  )
+  theme_watch() +
+  theme(panel.grid = element_blank(),
+        axis.text.x = element_text(face = "bold"),
+        axis.text.y = element_text(face = "bold", colour = watch_text))
 ```
 
-```{r cluster-summary, include=FALSE}
-# For inline text below
-cluster_sizes <- scores_df %>% count(cluster) %>% arrange(cluster)
-cluster_types <- scores_df %>%
-  count(cluster, broad) %>%
-  group_by(cluster) %>%
-  slice_max(n, n = 1) %>%
-  ungroup()
-```
+Each family now reads on sight. Dive and Tool runs hot on water resistance and case size. Grail and Haute Horlogerie is off the charts on price while staying modest in dimensions. Smart and Digital sits apart on lug width, since every smartwatch reads as zero there. Premium and Sport carries moderate prices with beefier builds, and Dress and Everyday anchors the affordable, slim, low-water-resistance corner.
 
-Each cluster has a personality. The one with the highest water resistance and thickness is your diver and tool watch shelf. The one with the highest price but modest size is the luxury and dress corner. The cluster with near-zero lug width is every smartwatch and digital piece in the dataset, sitting apart because its spec profile is genuinely different from anything mechanical. The remaining two clusters carve out the broad mid-range, separating more affordable everyday wear from the sport and chronograph pieces that carry moderate prices with beefier builds.
-
-A few watches will always sit between clusters, because a Rolex GMT-Master is simultaneously a tool watch and a luxury piece. PCA and k-means do not resolve that ambiguity. What they do is show that the watch market has more distinct shape to it than the usual brand-tier story suggests, and that the most important dividing lines run along specs rather than names.
+A few watches will always sit between families, because a Rolex GMT-Master is simultaneously a tool watch and a luxury piece. PCA and k-means do not resolve that ambiguity. What they do is show that the watch market has more distinct shape to it than the usual brand-tier story suggests, and that the most important dividing lines run along specs rather than names.

@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Joseph Ortega">
 
-<title>About – The 1000 Watch Project</title>
+<title>Chronographs vs.&nbsp;Divers – The 1000 Watch Project</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -102,7 +101,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Average Prices</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./chronograph_vs_diver.html"> 
+    <a class="nav-link active" href="./chronograph_vs_diver.html" aria-current="page"> 
 <span class="menu-text">Chronographs vs.&nbsp;Divers</span></a>
   </li>  
   <li class="nav-item">
@@ -110,7 +109,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Watch Landscape</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./about.html" aria-current="page"> 
+    <a class="nav-link" href="./about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
@@ -129,11 +128,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-this-is" id="toc-what-this-is" class="nav-link active" data-scroll-target="#what-this-is">What this is</a></li>
-  <li><a href="#the-dataset" id="toc-the-dataset" class="nav-link" data-scroll-target="#the-dataset">The dataset</a></li>
-  <li><a href="#how-to-read-the-site" id="toc-how-to-read-the-site" class="nav-link" data-scroll-target="#how-to-read-the-site">How to read the site</a></li>
-  <li><a href="#methods-briefly" id="toc-methods-briefly" class="nav-link" data-scroll-target="#methods-briefly">Methods, briefly</a></li>
-  <li><a href="#about-the-author" id="toc-about-the-author" class="nav-link" data-scroll-target="#about-the-author">About the author</a></li>
+  <li><a href="#price-side-by-side" id="toc-price-side-by-side" class="nav-link active" data-scroll-target="#price-side-by-side">Price, side by side</a></li>
+  <li><a href="#what-is-ticking-inside" id="toc-what-is-ticking-inside" class="nav-link" data-scroll-target="#what-is-ticking-inside">What is ticking inside</a></li>
+  <li><a href="#who-builds-them" id="toc-who-builds-them" class="nav-link" data-scroll-target="#who-builds-them">Who builds them</a></li>
+  <li><a href="#is-the-price-difference-real" id="toc-is-the-price-difference-real" class="nav-link" data-scroll-target="#is-the-price-difference-real">Is the price difference real?</a></li>
   </ul>
 </nav>
     </div>
@@ -142,20 +140,14 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">About</h1>
-<p class="subtitle lead">What this project is, where the data comes from, and how to read it.</p>
+<h1 class="title">Chronographs vs.&nbsp;Divers</h1>
+<p class="subtitle lead">Two of the most collected styles, compared on price, movement, and who builds them.</p>
 </div>
 
 
 
 <div class="quarto-title-meta column-page-left">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Joseph Ortega </p>
-          </div>
-  </div>
     
   
     
@@ -166,51 +158,67 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="what-this-is" class="level2">
-<h2 class="anchored" data-anchor-id="what-this-is">What this is</h2>
-<p>The 1000 Watch Project is an attempt to look at the watch world through data instead of hype. Most watch coverage online is either a spec sheet or a sales pitch. This site tries to be neither. It takes a curated set of a thousand watches and asks the questions enthusiasts actually argue about: what does a given style really cost, how much value survives the resale market, and whether the categories we throw around hold up when you cluster watches purely by their measurements.</p>
-<p>It is built as a static site with <a href="https://quarto.org">Quarto</a> and analysed entirely in R with the tidyverse, so every chart on every page is reproducible from the same single dataset.</p>
-<div class="stat-grid">
-  <div class="stat-card">
-    <div class="stat-num">1,000</div>
-    <div class="stat-label">Watches</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num">121</div>
-    <div class="stat-label">Brands</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num">23</div>
-    <div class="stat-label">Attributes each</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num">21</div>
-    <div class="stat-label">Countries of origin</div>
-  </div>
+<p>Chronographs and divers are the two pillars of most collections, so they make a natural head to head. One is built to time things, the other to survive underwater, and that difference shows up in price, in the movements they run, and in which brands lean into each. The charts below swap the old pie slices for views that actually let you compare.</p>
+<section id="price-side-by-side" class="level2">
+<h2 class="anchored" data-anchor-id="price-side-by-side">Price, side by side</h2>
+<p>Rather than a single bar for the average, the plot below shows the entire price distribution for each style. The width of each shape is where watches pile up, and the slim box inside marks the median and the middle fifty percent. The axis is logged so the affordable end stays readable next to the expensive outliers.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="chronograph_vs_diver_files/figure-html/price-violin-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1275"></p>
+</figure>
 </div>
+</div>
+</div>
+<p>Chronographs sit higher and spread wider, with a fat upper tail from the panda-dial icons and integrated calibers. Divers cluster tighter and lower, which fits their reputation as the more accessible everyday tool watch.</p>
 </section>
-<section id="the-dataset" class="level2">
-<h2 class="anchored" data-anchor-id="the-dataset">The dataset</h2>
-<p>Each watch carries twenty-three attributes: brand and model, reference number, type, movement and base caliber, new and used price, year, and a full set of physical specs from case diameter and thickness to water resistance, lug width, weight, crystal, bezel material, and power reserve.</p>
-<p>The collection was assembled to mirror what is genuinely popular and actually being bought, rather than to be exhaustive. Mainstream names that people search for and wear in volume are weighted accordingly, the affordable Japanese and entry Swiss brands sit alongside the Swiss icons and the independents, and obscure references that pad a list without adding insight were deliberately left out.</p>
+<section id="what-is-ticking-inside" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-ticking-inside">What is ticking inside</h2>
+<p>Counts alone favour whichever style has more entries, so this view shows the share of each movement type within each category. Reading it as percentages makes the mix directly comparable even though there are more divers overall.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="chronograph_vs_diver_files/figure-html/movement-share-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1275"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Both styles run mostly automatic, but divers lean on solar and quartz more than chronographs do, since a dive watch values dead-reliable timekeeping over mechanical romance. Manual winding is the rarity in both, kept alive on the chronograph side largely by a few heritage references.</p>
+</section>
+<section id="who-builds-them" class="level2">
+<h2 class="anchored" data-anchor-id="who-builds-them">Who builds them</h2>
+<p>This heatmap replaces the two pie charts entirely. It puts the most represented brands against movement type, with each cell counting how many chronograph and diver models that brand fields. Brighter cells mean more models, so you can spot at a glance where a brand concentrates its effort.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="chronograph_vs_diver_files/figure-html/brand-heatmap-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1275"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The affordable Japanese names dominate the automatic column through sheer model count, which is why divers feel so plentiful at the low end. The Swiss houses spread thinner but reach into the higher value mechanical and chronograph territory. The quartz and solar columns light up exactly where you would expect, on the brands built around tough, set-and-forget tool watches.</p>
+</section>
+<section id="is-the-price-difference-real" class="level2">
+<h2 class="anchored" data-anchor-id="is-the-price-difference-real">Is the price difference real?</h2>
+<p>The violin plot earlier made it look like chronographs cost more than divers. But is that gap meaningful, or could it be a coincidence of which watches ended up in this particular dataset? A permutation test answers that directly.</p>
+<p>The idea is simple: under the null hypothesis that watch type has nothing to do with price, shuffling the Type labels should produce the same kinds of median differences as the real data. We shuffle 5,000 times, record the difference in medians each time, and see where the actual observed gap lands inside that null distribution.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="chronograph_vs_diver_files/figure-html/perm-test-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1350"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The blue histogram is every world where Type labels were random noise, and it never strays far from zero. The real gap is so far past it that it does not fit on the same axis, which is exactly the point: the dataset strongly supports the claim that chronographs price higher than divers, with a p-value of &lt; 0.001.</p>
+<p>A bootstrap 95% confidence interval for the median difference puts the true gap between $3,520 and $6,805. That range is the honest answer to how much more a chronograph actually costs, accounting for sampling uncertainty in this dataset.</p>
 <div class="watch-note">
-<p><strong>An honest note on accuracy.</strong> Prices and specs in this dataset are best-knowledge approximations, not figures pulled from a live transaction feed. They are good enough to reveal the shape of the market and the relationships between categories, which is what this site analyses. They are not a substitute for a dealer quote on a specific reference. Wherever the site reports a statistical result, it is describing the structure of this dataset, not making a verified claim about the global market.</p>
+<p>One caveat worth being straight about: this dataset was built from best-knowledge approximations rather than live transaction data. The inference describes the structure of this collection, not a verified claim about the global secondhand market.</p>
 </div>
-</section>
-<section id="how-to-read-the-site" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-read-the-site">How to read the site</h2>
-<p>The <strong>Home</strong> page is the entry point: a searchable table of every watch, the brands that carry the collection, and a ridgeline view of how price spreads across each style.</p>
-<p><strong>Average Prices</strong> digs into money. It looks at the full price distribution rather than misleading averages, plots new against used price to show what holds value, and ranks brands by the gap between the two.</p>
-<p><strong>Chronographs vs.&nbsp;Divers</strong> is a head to head between the two most collected styles, comparing price, movement mix, and the brands behind each, then uses a permutation test to check whether the price gap is real or just noise.</p>
-<p><strong>Watch Landscape</strong> is the most experimental page. It runs principal component analysis and k-means clustering on the physical specs alone, with no brand or type information, to see what natural families of watches emerge from the numbers.</p>
-</section>
-<section id="methods-briefly" class="level2">
-<h2 class="anchored" data-anchor-id="methods-briefly">Methods, briefly</h2>
-<p>Everything here uses base R and the tidyverse. Visualisations are built with ggplot2 on a shared dark theme. The clustering uses <code>prcomp</code> for dimensionality reduction and <code>kmeans</code> for the families, both standard and reproducible with a fixed seed. The inference uses permutation tests and bootstrap confidence intervals rather than parametric tests, because watch prices are heavily skewed and those resampling methods make no assumption about a normal distribution.</p>
-</section>
-<section id="about-the-author" class="level2">
-<h2 class="anchored" data-anchor-id="about-the-author">About the author</h2>
-<p>This project is built and maintained by Joseph Ortega, a watch enthusiast who would rather interrogate a dataset than read another listicle. It is a work in progress, and the dataset will keep growing and improving over time. Suggestions for models to add, corrections, and ideas for new analyses are always welcome.</p>
 
 
 </section>

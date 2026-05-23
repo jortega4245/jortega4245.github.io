@@ -1,9 +1,72 @@
 ---
 title: "About"
+subtitle: "What this project is, where the data comes from, and how to read it."
+author: Joseph Ortega
+format:
+  html:
+    page-layout: full
+    toc: true
 ---
 
-About this site
-
-```{r}
-1 + 1
+```{r setup, include=FALSE}
+library(tidyverse)
+source("theme_watch.R")
+watch_data <- read_csv("1000_Watch_Dataset.csv")
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
+                      dev = "png", dpi = 150, dev.args = list(bg = "transparent"))
 ```
+
+## What this is
+
+The 1000 Watch Project is an attempt to look at the watch world through data instead of hype. Most watch coverage online is either a spec sheet or a sales pitch. This site tries to be neither. It takes a curated set of a thousand watches and asks the questions enthusiasts actually argue about: what does a given style really cost, how much value survives the resale market, and whether the categories we throw around hold up when you cluster watches purely by their measurements.
+
+It is built as a static site with [Quarto](https://quarto.org) and analysed entirely in R with the tidyverse, so every chart on every page is reproducible from the same single dataset.
+
+```{=html}
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-num">`r format(nrow(watch_data), big.mark=",")`</div>
+    <div class="stat-label">Watches</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">`r n_distinct(watch_data$Brand)`</div>
+    <div class="stat-label">Brands</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">`r ncol(watch_data)`</div>
+    <div class="stat-label">Attributes each</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">`r n_distinct(watch_data$"Country of Manufacture")`</div>
+    <div class="stat-label">Countries of origin</div>
+  </div>
+</div>
+```
+
+## The dataset
+
+Each watch carries twenty-three attributes: brand and model, reference number, type, movement and base caliber, new and used price, year, and a full set of physical specs from case diameter and thickness to water resistance, lug width, weight, crystal, bezel material, and power reserve.
+
+The collection was assembled to mirror what is genuinely popular and actually being bought, rather than to be exhaustive. Mainstream names that people search for and wear in volume are weighted accordingly, the affordable Japanese and entry Swiss brands sit alongside the Swiss icons and the independents, and obscure references that pad a list without adding insight were deliberately left out.
+
+::: {.watch-note}
+**An honest note on accuracy.** Prices and specs in this dataset are best-knowledge approximations, not figures pulled from a live transaction feed. They are good enough to reveal the shape of the market and the relationships between categories, which is what this site analyses. They are not a substitute for a dealer quote on a specific reference. Wherever the site reports a statistical result, it is describing the structure of this dataset, not making a verified claim about the global market.
+:::
+
+## How to read the site
+
+The **Home** page is the entry point: a searchable table of every watch, the brands that carry the collection, and a ridgeline view of how price spreads across each style.
+
+**Average Prices** digs into money. It looks at the full price distribution rather than misleading averages, plots new against used price to show what holds value, and ranks brands by the gap between the two.
+
+**Chronographs vs. Divers** is a head to head between the two most collected styles, comparing price, movement mix, and the brands behind each, then uses a permutation test to check whether the price gap is real or just noise.
+
+**Watch Landscape** is the most experimental page. It runs principal component analysis and k-means clustering on the physical specs alone, with no brand or type information, to see what natural families of watches emerge from the numbers.
+
+## Methods, briefly
+
+Everything here uses base R and the tidyverse. Visualisations are built with ggplot2 on a shared dark theme. The clustering uses `prcomp` for dimensionality reduction and `kmeans` for the families, both standard and reproducible with a fixed seed. The inference uses permutation tests and bootstrap confidence intervals rather than parametric tests, because watch prices are heavily skewed and those resampling methods make no assumption about a normal distribution.
+
+## About the author
+
+This project is built and maintained by Joseph Ortega, a watch enthusiast who would rather interrogate a dataset than read another listicle. It is a work in progress, and the dataset will keep growing and improving over time. Suggestions for models to add, corrections, and ideas for new analyses are always welcome.

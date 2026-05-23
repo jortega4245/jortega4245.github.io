@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Joseph Ortega">
 
-<title>About – The 1000 Watch Project</title>
+<title>Watch Landscape – The 1000 Watch Project</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -106,11 +105,11 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Chronographs vs.&nbsp;Divers</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./watch_landscape.html"> 
+    <a class="nav-link active" href="./watch_landscape.html" aria-current="page"> 
 <span class="menu-text">Watch Landscape</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./about.html" aria-current="page"> 
+    <a class="nav-link" href="./about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
@@ -129,11 +128,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-this-is" id="toc-what-this-is" class="nav-link active" data-scroll-target="#what-this-is">What this is</a></li>
-  <li><a href="#the-dataset" id="toc-the-dataset" class="nav-link" data-scroll-target="#the-dataset">The dataset</a></li>
-  <li><a href="#how-to-read-the-site" id="toc-how-to-read-the-site" class="nav-link" data-scroll-target="#how-to-read-the-site">How to read the site</a></li>
-  <li><a href="#methods-briefly" id="toc-methods-briefly" class="nav-link" data-scroll-target="#methods-briefly">Methods, briefly</a></li>
-  <li><a href="#about-the-author" id="toc-about-the-author" class="nav-link" data-scroll-target="#about-the-author">About the author</a></li>
+  <li><a href="#what-the-two-axes-represent" id="toc-what-the-two-axes-represent" class="nav-link active" data-scroll-target="#what-the-two-axes-represent">What the two axes represent</a></li>
+  <li><a href="#the-natural-families" id="toc-the-natural-families" class="nav-link" data-scroll-target="#the-natural-families">The natural families</a></li>
+  <li><a href="#what-defines-each-family" id="toc-what-defines-each-family" class="nav-link" data-scroll-target="#what-defines-each-family">What defines each family</a></li>
   </ul>
 </nav>
     </div>
@@ -142,20 +139,14 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">About</h1>
-<p class="subtitle lead">What this project is, where the data comes from, and how to read it.</p>
+<h1 class="title">Watch Landscape</h1>
+<p class="subtitle lead">A map of 1,000 watches built entirely from their physical specs and prices.</p>
 </div>
 
 
 
 <div class="quarto-title-meta column-page-left">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Joseph Ortega </p>
-          </div>
-  </div>
     
   
     
@@ -166,51 +157,48 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="what-this-is" class="level2">
-<h2 class="anchored" data-anchor-id="what-this-is">What this is</h2>
-<p>The 1000 Watch Project is an attempt to look at the watch world through data instead of hype. Most watch coverage online is either a spec sheet or a sales pitch. This site tries to be neither. It takes a curated set of a thousand watches and asks the questions enthusiasts actually argue about: what does a given style really cost, how much value survives the resale market, and whether the categories we throw around hold up when you cluster watches purely by their measurements.</p>
-<p>It is built as a static site with <a href="https://quarto.org">Quarto</a> and analysed entirely in R with the tidyverse, so every chart on every page is reproducible from the same single dataset.</p>
-<div class="stat-grid">
-  <div class="stat-card">
-    <div class="stat-num">1,000</div>
-    <div class="stat-label">Watches</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num">121</div>
-    <div class="stat-label">Brands</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num">23</div>
-    <div class="stat-label">Attributes each</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num">21</div>
-    <div class="stat-label">Countries of origin</div>
-  </div>
+<p>Every watch in this dataset has at least seven measurable numbers: diameter, thickness, lug width, water resistance, price, weight, and power reserve. Principal component analysis collapses those seven dimensions down to two, preserving as much of the original variance as possible, so each watch becomes a single dot on a map. The further apart two dots sit, the more different those two watches are across their specs.</p>
+<section id="what-the-two-axes-represent" class="level2">
+<h2 class="anchored" data-anchor-id="what-the-two-axes-represent">What the two axes represent</h2>
+<p>The arrows below point in the direction each feature pulls most strongly. Arrows pointing the same way mean those features tend to move together. Arrows pointing opposite ways mean they trade off against each other.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="watch_landscape_files/figure-html/biplot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1350"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Price and power reserve typically pull in different directions from water resistance and thickness, which captures the familiar tension in this hobby: the most expensive watches are often the thinnest and least waterproof (dress and luxury), while robust tool watches trade price for depth rating and case volume. Smart and digital watches sit apart because zero lug width is a highly distinctive feature on this dataset.</p>
+</section>
+<section id="the-natural-families" class="level2">
+<h2 class="anchored" data-anchor-id="the-natural-families">The natural families</h2>
+<p>K-means finds five groupings using all seven features, not just the two PCA axes shown here. Instead of leaving them numbered, each cluster is named for the kind of watch that defines it, based on its own median price, water resistance, and proportions.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="watch_landscape_files/figure-html/clusters-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1350"></p>
+</figure>
+</div>
+</div>
 </div>
 </section>
-<section id="the-dataset" class="level2">
-<h2 class="anchored" data-anchor-id="the-dataset">The dataset</h2>
-<p>Each watch carries twenty-three attributes: brand and model, reference number, type, movement and base caliber, new and used price, year, and a full set of physical specs from case diameter and thickness to water resistance, lug width, weight, crystal, bezel material, and power reserve.</p>
-<p>The collection was assembled to mirror what is genuinely popular and actually being bought, rather than to be exhaustive. Mainstream names that people search for and wear in volume are weighted accordingly, the affordable Japanese and entry Swiss brands sit alongside the Swiss icons and the independents, and obscure references that pad a list without adding insight were deliberately left out.</p>
-<div class="watch-note">
-<p><strong>An honest note on accuracy.</strong> Prices and specs in this dataset are best-knowledge approximations, not figures pulled from a live transaction feed. They are good enough to reveal the shape of the market and the relationships between categories, which is what this site analyses. They are not a substitute for a dealer quote on a specific reference. Wherever the site reports a statistical result, it is describing the structure of this dataset, not making a verified claim about the global market.</p>
+<section id="what-defines-each-family" class="level2">
+<h2 class="anchored" data-anchor-id="what-defines-each-family">What defines each family</h2>
+<p>The heatmap below shows the average of each scaled feature per family. A warm cell means that family scores above average on that feature; a cool cell means below average. This is what justifies each name.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="watch_landscape_files/figure-html/cluster-profiles-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1350"></p>
+</figure>
 </div>
-</section>
-<section id="how-to-read-the-site" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-read-the-site">How to read the site</h2>
-<p>The <strong>Home</strong> page is the entry point: a searchable table of every watch, the brands that carry the collection, and a ridgeline view of how price spreads across each style.</p>
-<p><strong>Average Prices</strong> digs into money. It looks at the full price distribution rather than misleading averages, plots new against used price to show what holds value, and ranks brands by the gap between the two.</p>
-<p><strong>Chronographs vs.&nbsp;Divers</strong> is a head to head between the two most collected styles, comparing price, movement mix, and the brands behind each, then uses a permutation test to check whether the price gap is real or just noise.</p>
-<p><strong>Watch Landscape</strong> is the most experimental page. It runs principal component analysis and k-means clustering on the physical specs alone, with no brand or type information, to see what natural families of watches emerge from the numbers.</p>
-</section>
-<section id="methods-briefly" class="level2">
-<h2 class="anchored" data-anchor-id="methods-briefly">Methods, briefly</h2>
-<p>Everything here uses base R and the tidyverse. Visualisations are built with ggplot2 on a shared dark theme. The clustering uses <code>prcomp</code> for dimensionality reduction and <code>kmeans</code> for the families, both standard and reproducible with a fixed seed. The inference uses permutation tests and bootstrap confidence intervals rather than parametric tests, because watch prices are heavily skewed and those resampling methods make no assumption about a normal distribution.</p>
-</section>
-<section id="about-the-author" class="level2">
-<h2 class="anchored" data-anchor-id="about-the-author">About the author</h2>
-<p>This project is built and maintained by Joseph Ortega, a watch enthusiast who would rather interrogate a dataset than read another listicle. It is a work in progress, and the dataset will keep growing and improving over time. Suggestions for models to add, corrections, and ideas for new analyses are always welcome.</p>
+</div>
+</div>
+<p>Each family now reads on sight. Dive and Tool runs hot on water resistance and case size. Grail and Haute Horlogerie is off the charts on price while staying modest in dimensions. Smart and Digital sits apart on lug width, since every smartwatch reads as zero there. Premium and Sport carries moderate prices with beefier builds, and Dress and Everyday anchors the affordable, slim, low-water-resistance corner.</p>
+<p>A few watches will always sit between families, because a Rolex GMT-Master is simultaneously a tool watch and a luxury piece. PCA and k-means do not resolve that ambiguity. What they do is show that the watch market has more distinct shape to it than the usual brand-tier story suggests, and that the most important dividing lines run along specs rather than names.</p>
 
 
 </section>
