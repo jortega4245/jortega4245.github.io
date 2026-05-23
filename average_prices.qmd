@@ -1,0 +1,123 @@
+---
+title: "Average Prices"
+subtitle: "What the market charges, what it gives back, and where the value hides."
+format:
+  html:
+    page-layout: full
+    toc: true
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(scales)
+
+watch_data <- read_csv("1000_Watch_Dataset.csv")
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
+                      fig.align = "center", dev = "png", dpi = 150)
+```
+
+Prices in this hobby behave strangely. A huge share of the market sits under a thousand dollars, then a long tail stretches all the way into six figures. That shape matters, because an average gets dragged around by a handful of grail pieces while the typical watch tells a very different story. So instead of leaning on averages, this page looks at the full distribution and at how much of a watch's value survives the jump from new to used.
+
+## How prices are actually distributed
+
+Below is every new price in the dataset, plotted on a log scale with a smooth density curve laid over the bars. The curve uses a Gaussian (normal) kernel, so it reads as a clean estimate of where watches really cluster rather than a jagged count.
+
+```{r price-kde, fig.width=9, fig.height=5.5}
+watch_data %>%
+  filter(!is.na(`Price (New)`)) %>%
+  ggplot(aes(`Price (New)`)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 40,
+                 fill = "#3d7ea6", colour = "white", alpha = 0.9) +
+  geom_density(kernel = "gaussian", colour = "#b2182b",
+               fill = "#b2182b", alpha = 0.08, linewidth = 1.1) +
+  scale_x_log10(labels = label_dollar(),
+                breaks = c(50, 250, 1000, 5000, 25000, 1e5)) +
+  labs(
+    title = "Where watch prices really cluster",
+    subtitle = "New price distribution with a Gaussian density estimate (log scale)",
+    x = "Price (new)", y = "Density"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
+    panel.grid.minor = element_blank()
+  )
+```
+
+The peak lands squarely in the few-hundred to low-thousands range, which is exactly where the affordable Japanese and entry Swiss pieces live. Everything past five thousand thins out fast, and the luxury tail is a faint smear off to the right that pulls any "average" upward without representing what most people buy.
+
+## What survives on the used market
+
+A new price only means something next to what the watch is worth later. The plot below puts new price on one axis and used price on the other, both on log scales. The dashed line is parity, where a watch holds exactly its value. Points are coloured by retention ratio, so blue pieces hold or gain while red pieces have given value back.
+
+```{r new-vs-used, fig.width=9, fig.height=6}
+watch_data %>%
+  filter(!is.na(`Price (New)`), !is.na(`Price (Used)`)) %>%
+  mutate(retention = `Price (Used)` / `Price (New)`) %>%
+  ggplot(aes(`Price (New)`, `Price (Used)`)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", colour = "grey55") +
+  geom_point(aes(colour = retention), alpha = 0.65, size = 2.2) +
+  scale_x_log10(labels = label_dollar()) +
+  scale_y_log10(labels = label_dollar()) +
+  scale_colour_gradient2(
+    low = "#d73027", mid = "#fee090", high = "#4575b4",
+    midpoint = 1, limits = c(0.4, 1.6), oob = squish,
+    name = "Used / New"
+  ) +
+  labs(
+    title = "New price versus used price",
+    subtitle = "Above the line a watch holds value, below it depreciates",
+    x = "Price (new)", y = "Price (used)"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
+    panel.grid.minor = element_blank(),
+    legend.position = "right"
+  )
+```
+
+Most of the cloud sits just under the parity line, which is the normal story: buy new, lose a little. The blue points floating above the line are the well-known exceptions, the steel sport pieces and grail references that trade for more than retail. The deep red points near the bottom are the watches that shed value the moment they leave the case.
+
+## Where the depreciation gap is widest
+
+Finally, here is the new-to-used gap brand by brand, limited to the names with enough models to be meaningful. Each row connects a brand's median used price to its median new price, so the longer the line, the bigger the drop.
+
+```{r dumbbell, fig.width=9, fig.height=6.5}
+watch_data %>%
+  filter(!is.na(`Price (New)`), !is.na(`Price (Used)`)) %>%
+  group_by(Brand) %>%
+  summarise(n = n(),
+            med_new  = median(`Price (New)`),
+            med_used = median(`Price (Used)`),
+            .groups = "drop") %>%
+  filter(n >= 8) %>%
+  slice_max(med_new, n = 15) %>%
+  mutate(Brand = fct_reorder(Brand, med_new)) %>%
+  ggplot() +
+  geom_segment(aes(x = med_used, xend = med_new, y = Brand, yend = Brand),
+               colour = "grey75", linewidth = 1.3) +
+  geom_point(aes(x = med_used, y = Brand, colour = "Used"), size = 3.6) +
+  geom_point(aes(x = med_new,  y = Brand, colour = "New"),  size = 3.6) +
+  scale_x_log10(labels = label_dollar()) +
+  scale_colour_manual(values = c(New = "#2c4a6e", Used = "#d7301f"), name = NULL) +
+  labs(
+    title = "Median new versus used price, by brand",
+    subtitle = "Brands with at least eight models, ranked by median new price",
+    x = "Median price", y = NULL
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.text.y = element_text(face = "bold"),
+    legend.position = "top"
+  )
+```
+
+The independents and high horology names show the largest absolute gaps simply because the numbers are so big, but the interesting cases are the brands where the two dots nearly touch. Those are the watches that ask a lot up front and then refuse to give much back, which is the closest thing to a safe buy this market offers.

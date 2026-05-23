@@ -1,1 +1,72 @@
-/* css styles */
+/* ============================================================
+   The 1000 Watch Project — site styles
+   ============================================================ */
+
+/* ---- Title block ---------------------------------------- */
+.quarto-title-block .quarto-title .title {
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.quarto-title-block .subtitle {
+  color: #5a6472;
+  font-size: 1.15rem;
+  font-weight: 400;
+}
+
+/* ---- Stat cards (homepage "by the numbers") ------------- */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin: 2.25rem 0 2.75rem;
+}
+
+.stat-card {
+  background: linear-gradient(150deg, #1f2a44 0%, #2c4a6e 55%, #3d7ea6 100%);
+  color: #fff;
+  border-radius: 14px;
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  box-shadow: 0 6px 22px rgba(31, 42, 68, 0.18);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(31, 42, 68, 0.28);
+}
+
+.stat-num {
+  font-size: 2.1rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+.stat-label {
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+
+/* ---- Section headings ----------------------------------- */
+h2 {
+  border-bottom: 2px solid #e6e9ef;
+  padding-bottom: 0.35rem;
+  margin-top: 2.75rem;
+  font-weight: 700;
+}
+
+/* ---- DataTable polish ----------------------------------- */
+.dataTables_wrapper {
+  margin-top: 1rem;
+  font-size: 0.92rem;
+}
+table.dataTable thead th {
+  background: #1f2a44;
+  color: #fff;
+  border: none !important;
+}
+table.dataTable tbody tr:hover {
+  background-color: #eef4f9 !important;
+}

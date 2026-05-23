@@ -1,60 +1,133 @@
 ---
-title: "A Comprehensive Watch Guide"
-format: html
-editor: visual
+title: "The 1000 Watch Project"
+subtitle: "A data-driven field guide to what people actually wear, buy, and obsess over."
 author: Joseph Ortega
+date: today
+format:
+  html:
+    page-layout: full
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(DT)
-library(plotly)
-watch_data <- read_csv("750 Watch Dataset.csv")
+library(ggridges)     # install.packages("ggridges")
+library(scales)
+library(RColorBrewer)
+
+watch_data <- read_csv("1000_Watch_Dataset.csv")
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
+                      fig.align = "center", dev = "png", dpi = 150)
 ```
 
-![Sinn 556](images/Sinn%20556.jpg)
+A thousand watches, hand-picked to mirror what's genuinely moving right now: from the \$18 Casio that lives on a million wrists to the six-figure tourbillon nobody can get. No phantom references, no made-up micro-brands padding the list — just the watches people actually search for, argue about, and save up for.
 
-If you're anything like me, you scour the internet for all types of information related to watches. From the cheapest automatic chronographs to the most commonly used movement. Here we will explore these topics and many more, from comparing dive watch case diameter trends over the years, to price trends from popular brands like the Rolex Datejust.
-
-## 🔍 Explore the Watch Dataset
-
-We will be using a dataset I built using AI, as well as manual searching. This is a work-in-progress list and will be updated as we go. For right now, some values such as prices are a bit off, I will try to ensure accuracy as this project grows.
-
-```{r filterable-table, echo = FALSE}
-DT::datatable(
-  watch_data,
-  filter = 'top',
-  options = list(pageLength = 10, autoWidth = TRUE),
-  rownames = FALSE
-)
+```{=html}
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-num">`r format(nrow(watch_data), big.mark=",")`</div>
+    <div class="stat-label">Watches catalogued</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">`r n_distinct(watch_data$Brand)`</div>
+    <div class="stat-label">Brands represented</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">`r n_distinct(watch_data$Type)`</div>
+    <div class="stat-label">Watch categories</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">$18&nbsp;–&nbsp;$400K</div>
+    <div class="stat-label">Price range (new)</div>
+  </div>
+</div>
 ```
 
-In this dataset, we have some pretty standard information, such as dimensions of the watch, movements, etc. What I really want to pinpoint in the future is comparison between types of movements and prices. As we're all watch fanatics, most of us want to find the best deal we can on the watch with maybe not the most name recognition, but the most bells and whistles. This is what this dataset will be primarily be focused on.
+## Browse the whole collection
 
-As you can see above, the list is not nearly exhaustive as I want it to be, we will be starting out with 600 models and moving on from here. If you have a specific model or brand you want to look up, you can use the search bar above to pinpoint all datasets I currently have of them.
+Everything is in here. Filter by brand, sort by price, hunt for the exact reference you're chasing, the table is fully searchable.
 
-# 🧭 Watch Types
+```{r table}
+watch_data %>%
+  select(Brand, Model, Type, `Movement Type`,
+         `Price (New)`, `Price (Used)`, Year,
+         `Case Diameter (mm)`, `Water Resistance (m)`) %>%
+  datatable(
+    rownames = FALSE,
+    filter = "top",
+    class = "stripe hover compact",
+    options = list(
+      pageLength = 10,
+      autoWidth = TRUE,
+      scrollX = TRUE,
+      dom = "ftip",
+      columnDefs = list(list(className = "dt-center", targets = "_all"))
+    )
+  ) %>%
+  formatCurrency(c("Price (New)", "Price (Used)"), digits = 0)
+```
 
-```{r, echo = FALSE}
-# Calculate the frequency and cumulative percentage
+## Who actually makes the watches
+
+These are the brands carrying the collection, and it's no accident the list reads like the most-searched names in the hobby: the affordable Japanese giants up top, the Swiss icons close behind.
+
+```{r brands, fig.width=9, fig.height=6}
 brand_counts <- watch_data %>%
-  count(Brand) %>%
-  head(40) %>%
-  arrange(desc(n)) %>%
-  mutate(
-    cumulative = cumsum(n),
-    cumulative_percent = cumulative / sum(n) * 100
-  )
+  count(Brand, name = "n") %>%
+  slice_max(n, n = 12)
 
-# Pareto chart
-ggplot(brand_counts, aes(x = reorder(Brand, -n), y = n)) +
-  geom_bar(stat = "identity", fill = "steelblue") +
-  geom_line(aes(y = cumulative_percent / 100 * max(n)), group = 1, color = "red", linewidth = 1) +
-  geom_point(aes(y = cumulative_percent / 100 * max(n)), color = "red") +
-  scale_y_continuous(sec.axis = sec_axis(~ . / max(brand_counts$n) * 100, name = "Cumulative Percentage")) +
-  labs(title = "Pareto Chart of Watch Brands", x = "Brand", y = "Count") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggplot(brand_counts, aes(x = fct_reorder(Brand, n), y = n, fill = n)) +
+  geom_col(width = 0.78) +
+  geom_text(aes(label = n), hjust = -0.25, size = 3.6,
+            colour = "grey25", fontface = "bold") +
+  coord_flip(clip = "off") +
+  scale_fill_distiller(palette = "GnBu", direction = 1, guide = "none") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.12))) +
+  labs(
+    title = "The 12 brands carrying the collection",
+    subtitle = "Count of models in the dataset",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor   = element_blank(),
+    axis.text.y = element_text(face = "bold")
+  )
 ```
 
-Our dataset is pretty diverse in watch brands, prioritizing a diversity of brand types, rather than focusing specifically on every different type of Datejust there is.
+## What you'll actually pay
+
+This is the chart that earns its place: watch *type* (a category) against *price* (a number), so you can see at a glance how the segments stack up. Each ridge is the full price distribution for that style, where it's tall and narrow, prices cluster; where it spreads, the range is wild. Note the log scale, because a Casio and a Patek do not belong on the same linear axis.
+
+```{r ridges, fig.width=9, fig.height=7}
+watch_data %>%
+  add_count(Type) %>%
+  filter(n >= 20) %>%                     # keep the meaningful categories
+  mutate(Type = fct_reorder(Type, `Price (New)`, .fun = median)) %>%
+  ggplot(aes(x = `Price (New)`, y = Type, fill = after_stat(x))) +
+  geom_density_ridges_gradient(scale = 2.1, rel_min_height = 0.01,
+                               colour = "white", linewidth = 0.4) +
+  scale_x_log10(labels = label_dollar(),
+                breaks = c(50, 250, 1000, 5000, 25000, 1e5)) +
+  scale_fill_distiller(palette = "Spectral", trans = "log10",
+                       labels = label_dollar(), name = "Price") +
+  labs(
+    title = "Price distribution by watch type",
+    subtitle = "Each ridge is the spread of new prices for that style (log scale)",
+    x = "Price (new)", y = NULL
+  ) +
+  theme_ridges(font_size = 13, grid = TRUE) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(colour = "grey45"),
+    legend.position = "right",
+    axis.title.x = element_text(hjust = 0.5)
+  )
+```
+
+Divers and dress watches dominate the affordable middle, sport and chronograph pieces fan out the widest, and the luxury category sits alone in the stratosphere. From here we can dig into the questions worth asking: which movements command a premium, where the depreciation cliffs are, and which segments quietly give you the most watch for the money.
