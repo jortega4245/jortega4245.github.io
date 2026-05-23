@@ -1,0 +1,202 @@
+---
+title: "Watch Landscape"
+subtitle: "A map of 1,000 watches built entirely from their physical specs and prices."
+format:
+  html:
+    page-layout: full
+    toc: true
+---
+
+```{r setup, include=FALSE}
+# Required packages: tidyverse, scales
+# No additional installs needed — all base R stats
+library(tidyverse)
+library(scales)
+
+watch_data <- read_csv("1000_Watch_Dataset.csv")
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
+                      fig.align = "center", dev = "png", dpi = 150)
+```
+
+```{r prep, include=FALSE}
+# Parse string columns and drop the one non-watch entry (Atmos clock, diameter = 0)
+landscape_df <- watch_data %>%
+  mutate(
+    weight_g       = parse_number(`Weight (grams)`),
+    power_res_h    = parse_number(`Power Reserve (hours)`)
+  ) %>%
+  filter(`Case Diameter (mm)` > 0) %>%
+  filter(!is.na(`Price (New)`)) %>%
+  drop_na(`Case Diameter (mm)`, `Case Thickness (mm)`,
+          `Lug Width (mm)`, `Water Resistance (m)`,
+          weight_g, power_res_h)
+
+# Scale and run PCA on seven spec / price features
+feat_names <- c("Case Diameter (mm)", "Case Thickness (mm)", "Lug Width (mm)",
+                "Water Resistance (m)", "Price (New)", "weight_g", "power_res_h")
+
+pca_mat <- landscape_df %>%
+  select(all_of(feat_names)) %>%
+  scale()
+
+set.seed(42)
+pca_result  <- prcomp(pca_mat, center = FALSE, scale. = FALSE)
+km_result   <- kmeans(pca_mat, centers = 5, nstart = 25)
+
+# Variance explained
+var_exp <- summary(pca_result)$importance[2, 1:2] * 100
+
+# Tidy scores for plotting
+scores_df <- landscape_df %>%
+  mutate(
+    PC1     = pca_result$x[, 1],
+    PC2     = pca_result$x[, 2],
+    cluster = factor(km_result$cluster),
+    broad   = case_when(
+      Type %in% c("Smartwatch", "Digital") ~ "Smart / Digital",
+      Type == "Luxury"                     ~ "Luxury",
+      Type %in% c("Diver", "Tool")         ~ "Diver / Tool",
+      Type %in% c("Dress", "Pilot")        ~ "Dress / Pilot",
+      TRUE                                 ~ "Sport / Field / GMT"
+    )
+  )
+
+# Biplot loadings: scale arrows to sit inside the scatter
+arrow_scale <- max(abs(c(scores_df$PC1, scores_df$PC2))) * 0.72
+short_names  <- c("Diameter", "Thickness", "Lug Width",
+                  "Water Res.", "Price", "Weight", "Power Res.")
+
+loadings_df <- as_tibble(pca_result$rotation[, 1:2]) %>%
+  mutate(
+    feature = short_names,
+    xend    = PC1 * arrow_scale,
+    yend    = PC2 * arrow_scale,
+    xlab    = xend * 1.17,
+    ylab    = yend * 1.17
+  )
+```
+
+Every watch in this dataset has at least seven measurable numbers: diameter, thickness, lug width, water resistance, price, weight, and power reserve. Principal component analysis collapses those seven dimensions down to two, preserving as much of the original variance as possible, so each watch becomes a single dot on a map. The further apart two dots sit, the more different those two watches are across their specs.
+
+## What the two axes represent
+
+The arrows below point in the direction each feature pulls most strongly. Arrows pointing the same way mean those features tend to move together. Arrows pointing opposite ways mean they trade off against each other.
+
+```{r biplot, fig.width=9, fig.height=6.5}
+ggplot(scores_df, aes(PC1, PC2)) +
+  geom_point(aes(colour = broad), alpha = 0.35, size = 1.4) +
+  geom_segment(
+    data = loadings_df,
+    aes(x = 0, y = 0, xend = xend, yend = yend),
+    arrow = arrow(length = unit(0.22, "cm"), type = "closed"),
+    colour = "#2c2c2c", linewidth = 0.85
+  ) +
+  geom_text(
+    data = loadings_df,
+    aes(x = xlab, y = ylab, label = feature),
+    size = 3.3, colour = "#2c2c2c", fontface = "bold"
+  ) +
+  scale_colour_brewer(palette = "Set1", name = NULL) +
+  labs(
+    title   = "PCA biplot: seven spec features across 999 watches",
+    subtitle = sprintf("PC1 explains %.1f%% of variance, PC2 %.1f%%",
+                       var_exp[1], var_exp[2]),
+    x = sprintf("PC1 (%.1f%%)", var_exp[1]),
+    y = sprintf("PC2 (%.1f%%)", var_exp[2])
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
+    panel.grid.minor  = element_blank(),
+    legend.position   = "top",
+    legend.text       = element_text(size = 10)
+  )
+```
+
+Price and power reserve typically pull in different directions from water resistance and thickness, which captures the familiar tension in this hobby: the most expensive watches are often the thinnest and least waterproof (dress and luxury), while robust tool watches trade price for depth rating and case volume. Smart and digital watches sit apart because zero lug width is a highly distinctive feature on this dataset.
+
+## The natural clusters
+
+K-means finds five groupings using all seven features, not just the two PCA axes shown here. The clusters are plotted back onto the same map so you can see how they carve up the space.
+
+```{r clusters, fig.width=9, fig.height=6.5}
+ggplot(scores_df, aes(PC1, PC2, colour = cluster)) +
+  geom_point(alpha = 0.55, size = 1.8) +
+  stat_ellipse(aes(group = cluster), level = 0.75,
+               linewidth = 0.5, linetype = "dashed") +
+  scale_colour_brewer(palette = "Dark2", name = "Cluster") +
+  labs(
+    title    = "K-means clustering on spec features (k = 5)",
+    subtitle = "Ellipses mark the 75% density region of each cluster",
+    x = sprintf("PC1 (%.1f%%)", var_exp[1]),
+    y = sprintf("PC2 (%.1f%%)", var_exp[2])
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
+    panel.grid.minor = element_blank(),
+    legend.position  = "top"
+  )
+```
+
+## What defines each cluster
+
+The heatmap below shows the average of each scaled feature per cluster. A warm cell means that cluster scores above average on that feature; a cool cell means below average. This is what lets you put a label on each cluster without guessing.
+
+```{r cluster-profiles, fig.width=9, fig.height=5.5}
+# Compute per-cluster mean of the original (unscaled) features
+profile_long <- scores_df %>%
+  select(cluster,
+         Diameter   = `Case Diameter (mm)`,
+         Thickness  = `Case Thickness (mm)`,
+         `Lug Width` = `Lug Width (mm)`,
+         `Water Res.` = `Water Resistance (m)`,
+         Price      = `Price (New)`,
+         Weight     = weight_g,
+         `Power Res.` = power_res_h) %>%
+  group_by(cluster) %>%
+  summarise(across(everything(), mean), .groups = "drop") %>%
+  pivot_longer(-cluster, names_to = "feature", values_to = "mean_val") %>%
+  # Z-score across clusters so features are comparable
+  group_by(feature) %>%
+  mutate(z = (mean_val - mean(mean_val)) / sd(mean_val)) %>%
+  ungroup()
+
+ggplot(profile_long, aes(feature, cluster, fill = z)) +
+  geom_tile(colour = "white", linewidth = 1) +
+  geom_text(aes(label = round(z, 1)), size = 3.4,
+            colour = ifelse(abs(profile_long$z) > 1.2, "white", "grey20"),
+            fontface = "bold") +
+  scale_fill_distiller(palette = "RdBu", direction = -1,
+                       limits = c(-2.2, 2.2), oob = squish,
+                       name = "Z-score") +
+  labs(
+    title    = "Cluster feature profiles (z-scored means)",
+    subtitle = "Red = above average for that feature, blue = below average",
+    x = NULL, y = "Cluster"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
+    panel.grid    = element_blank(),
+    axis.text.x   = element_text(face = "bold")
+  )
+```
+
+```{r cluster-summary, include=FALSE}
+# For inline text below
+cluster_sizes <- scores_df %>% count(cluster) %>% arrange(cluster)
+cluster_types <- scores_df %>%
+  count(cluster, broad) %>%
+  group_by(cluster) %>%
+  slice_max(n, n = 1) %>%
+  ungroup()
+```
+
+Each cluster has a personality. The one with the highest water resistance and thickness is your diver and tool watch shelf. The one with the highest price but modest size is the luxury and dress corner. The cluster with near-zero lug width is every smartwatch and digital piece in the dataset, sitting apart because its spec profile is genuinely different from anything mechanical. The remaining two clusters carve out the broad mid-range, separating more affordable everyday wear from the sport and chronograph pieces that carry moderate prices with beefier builds.
+
+A few watches will always sit between clusters, because a Rolex GMT-Master is simultaneously a tool watch and a luxury piece. PCA and k-means do not resolve that ambiguity. What they do is show that the watch market has more distinct shape to it than the usual brand-tier story suggests, and that the most important dividing lines run along specs rather than names.

@@ -107,3 +107,76 @@ cd %>%
 ```
 
 The affordable Japanese names dominate the automatic column through sheer model count, which is why divers feel so plentiful at the low end. The Swiss houses spread thinner but reach into the higher value mechanical and chronograph territory. The quartz and solar columns light up exactly where you would expect, on the brands built around tough, set-and-forget tool watches.
+
+## Is the price difference real?
+
+The violin plot earlier made it look like chronographs cost more than divers. But is that gap meaningful, or could it be a coincidence of which watches ended up in this particular dataset? A permutation test answers that directly.
+
+The idea is simple: under the null hypothesis that watch type has nothing to do with price, shuffling the Type labels should produce the same kinds of median differences as the real data. We shuffle 5,000 times, record the difference in medians each time, and see where the actual observed gap lands inside that null distribution.
+
+```{r perm-test, fig.width=9, fig.height=5.5}
+# Compute observed statistic: median(Chronograph) - median(Diver)
+cd_clean <- cd %>% filter(!is.na(`Price (New)`))
+
+obs_stat <- median(cd_clean$`Price (New)`[cd_clean$Type == "Chronograph"]) -
+            median(cd_clean$`Price (New)`[cd_clean$Type == "Diver"])
+
+# Permutation distribution
+set.seed(42)
+prices_vec <- cd_clean$`Price (New)`
+types_vec  <- cd_clean$Type
+
+null_dist <- replicate(5000, {
+  shuffled <- sample(types_vec)
+  median(prices_vec[shuffled == "Chronograph"]) -
+  median(prices_vec[shuffled == "Diver"])
+})
+
+p_val <- mean(abs(null_dist) >= abs(obs_stat))
+
+# Bootstrap 95% CI for the observed difference
+boot_diffs <- replicate(5000, {
+  idx  <- sample(seq_len(nrow(cd_clean)), replace = TRUE)
+  samp <- cd_clean[idx, ]
+  median(samp$`Price (New)`[samp$Type == "Chronograph"]) -
+  median(samp$`Price (New)`[samp$Type == "Diver"])
+})
+ci <- quantile(boot_diffs, c(0.025, 0.975))
+
+# Plot
+tibble(stat = null_dist) %>%
+  ggplot(aes(stat)) +
+  geom_histogram(bins = 70, fill = "#b8cfe8", colour = "white") +
+  geom_vline(xintercept =  obs_stat, colour = "#b2182b", linewidth = 1.3) +
+  geom_vline(xintercept = -obs_stat, colour = "#b2182b", linewidth = 1.3,
+             linetype = "dashed") +
+  annotate("label",
+           x = obs_stat, y = Inf, vjust = 1.6,
+           label = sprintf("Observed: $%s", comma(round(obs_stat))),
+           colour = "#b2182b", fill = "white",
+           size = 3.5, fontface = "bold") +
+  scale_x_continuous(labels = label_dollar()) +
+  labs(
+    title    = "Permutation test: chronograph vs diver median price",
+    subtitle = sprintf(
+      "5,000 shuffles under the null. Observed difference: %s   p-value: %s",
+      label_dollar()(round(obs_stat)),
+      ifelse(p_val < 0.001, "< 0.001", round(p_val, 3))
+    ),
+    x = "Permuted difference in medians (Chronograph minus Diver)",
+    y = "Count"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(colour = "grey45", margin = margin(b = 12)),
+    panel.grid.minor = element_blank()
+  )
+```
+
+The observed gap is the solid red line. Every bar in the histogram is a world where Type labels were random noise. The two lines sit far outside the null cloud, which means the dataset strongly supports the claim that chronographs price higher than divers: the p-value is `r ifelse(p_val < 0.001, "< 0.001", round(p_val, 3))`.
+
+A bootstrap 95% confidence interval for the median difference puts the true gap between `r label_dollar()(round(ci[1]))` and `r label_dollar()(round(ci[2]))`. That range is the honest answer to "how much more does a chronograph actually cost", accounting for sampling uncertainty in this dataset.
+
+One caveat worth being straight about: this dataset was built from best-knowledge approximations rather than live transaction data. The inference describes the structure of this collection, not a verified claim about the global secondhand market.
+
